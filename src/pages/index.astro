@@ -27,7 +27,7 @@ const secondary = latest.slice(1, 4);
 <BaseLayout>
   <section class="home-hero shell">
     <div class="hero-copy">
-      <div class="hero-kicker"><span>EAI-LAB</span><i></i><span>RESEARCH NOTES</span></div>
+      <div class="hero-kicker"><span>具身智能研究室</span><i></i><span>长期笔记</span></div>
       <h1>读懂具身智能，复现真实项目。</h1>
       <p>EAI-Lab 聚焦人形机器人、具身智能与 AI Agent 工程实践，用结构化笔记沉淀论文、项目复现和工具链经验。</p>
       <div class="hero-actions">
@@ -35,9 +35,9 @@ const secondary = latest.slice(1, 4);
         <a class="button ghost" href="/projects/">查看项目复现</a>
       </div>
       <div class="hero-meta">
-        <div><b>{papers.length}</b><span>PAPERS</span><small>论文精读</small></div>
-        <div><b>{agents.length}</b><span>AGENTS</span><small>Agent 实践</small></div>
-        <div><b>{projects.length}</b><span>PROJECTS</span><small>项目复现</small></div>
+        <div><b>{papers.length}</b><span>论文精读</span><small>已整理内容</small></div>
+        <div><b>{agents.length}</b><span>Agent 实践</span><small>已整理内容</small></div>
+        <div><b>{projects.length}</b><span>项目复现</span><small>已整理内容</small></div>
       </div>
     </div>
 
@@ -56,39 +56,39 @@ const secondary = latest.slice(1, 4);
   </section>
 
   <section class="portal-section shell">
-    <SectionHeader eyebrow="01 / CONTENT MAP" title="内容地图" description="按论文、Agent 和项目复现组织内容，方便长期查找和持续补充。" />
+    <SectionHeader eyebrow="01" title="内容地图" description="按论文、Agent 和项目复现组织内容，方便长期查找和持续补充。" />
     <div class="portal-grid">
       <a class="portal-card paper" href="/papers/">
         <div class="portal-top"><span>01</span><b>↗</b></div>
         <h3>论文精读</h3>
         <p>从研究问题出发，拆解方法、训练流程、实验设计和具体实现。</p>
-        <small>PAPERS / RESEARCH NOTES</small>
+        <small>研究问题 · 方法拆解 · 实现细节</small>
       </a>
       <a class="portal-card agent" href="/agents/">
         <div class="portal-top"><span>02</span><b>↗</b></div>
         <h3>Agent 实践</h3>
         <p>记录 AI Agent、Vibe Coding 和自动化工作流中的真实经验。</p>
-        <small>AGENTS / VIBE CODING</small>
+        <small>工具使用 · 工作流 · 真实经验</small>
       </a>
       <a class="portal-card project" href="/projects/">
         <div class="portal-top"><span>03</span><b>↗</b></div>
         <h3>项目复现</h3>
         <p>整理环境搭建、代码结构、训练过程、失败原因和阶段结论。</p>
-        <small>PROJECTS / REPRODUCTION</small>
+        <small>环境搭建 · 训练实验 · 复现记录</small>
       </a>
     </div>
   </section>
 
   {lead && (
     <section class="latest-section shell">
-      <SectionHeader eyebrow="02 / LATEST" title="近期更新" description="最近发布的论文解读、Agent 实践与项目复现记录。" href="/search/" linkLabel="搜索全部内容" />
+      <SectionHeader eyebrow="02" title="近期更新" description="最近发布的论文解读、Agent 实践与项目复现记录。" href="/search/" linkLabel="搜索全部内容" />
       <div class="editorial-grid">
         <a class={`lead-story ${lead.collection}`} href={entryUrl(lead.collection, lead.entry.id)}>
           <div class="lead-story-head">
             <span>{sectionMeta[lead.collection].label}</span>
             <time datetime={lead.entry.data.pubDate.toISOString()}>{formatDate(lead.entry.data.pubDate)}</time>
           </div>
-          <div class="lead-story-index">FEATURED / 01</div>
+          <div class="lead-story-index">重点内容 01</div>
           <h2>{lead.entry.data.title}</h2>
           <p>{lead.entry.data.description}</p>
           <div class="lead-story-bottom">
@@ -109,7 +109,7 @@ const secondary = latest.slice(1, 4);
   <section class="closing-panel shell">
     <div class="closing-mark" aria-hidden="true"><span>EAI</span></div>
     <div>
-      <span class="closing-kicker">EAI-LAB / 具身智能研究室</span>
+      <span class="closing-kicker">具身智能研究室</span>
       <h2>建立自己的研究脉络，而不是只收藏更多链接。</h2>
       <p>后续内容会继续围绕具身智能论文、AI Agent 工具实践和机器人项目复现更新。</p>
     </div>

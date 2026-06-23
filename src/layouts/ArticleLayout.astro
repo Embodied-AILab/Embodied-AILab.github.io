@@ -22,7 +22,7 @@ const data = entry.data;
     </nav>
 
     <header class="article-header">
-      <div class="article-kicker"><span>{meta.shortLabel}</span><i></i><span>{meta.label}</span></div>
+      <div class="article-kicker"><span>{meta.label}</span></div>
       <h1>{data.title}</h1>
       <p class="article-deck">{data.description}</p>
 
@@ -56,7 +56,7 @@ const data = entry.data;
 
       {visibleHeadings.length > 0 && (
         <aside class="toc" aria-label="本页目录">
-          <div class="toc-title">ON THIS PAGE</div>
+          <div class="toc-title">本页目录</div>
           <ol>
             {visibleHeadings.map((heading) => (
               <li class:list={[heading.depth === 3 && 'toc-sub']}>

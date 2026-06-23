@@ -7,7 +7,7 @@
   <circle cx="1010" cy="165" r="105" fill="none" stroke="#9b98ff" stroke-width="3"/>
   <ellipse cx="1010" cy="165" rx="150" ry="58" fill="none" stroke="#b8ec69" stroke-width="3" transform="rotate(-22 1010 165)"/>
   <circle cx="1140" cy="109" r="10" fill="#b8ec69"/>
-  <text x="82" y="190" fill="#b8ec69" font-size="24" letter-spacing="6" font-family="Arial, sans-serif">EMBODIED INTELLIGENCE</text>
+  <text x="82" y="190" fill="#b8ec69" font-size="24" letter-spacing="6" font-family="Arial, sans-serif">具身智能研究笔记</text>
   <text x="76" y="335" fill="#f4f2ec" font-size="112" font-weight="700" font-family="Georgia, serif">EAI-Lab</text>
   <text x="82" y="413" fill="#c8c5bb" font-size="38" font-family="Arial, sans-serif">具身智能研究室</text>
   <text x="82" y="503" fill="#8f8b83" font-size="27" font-family="Arial, sans-serif">论文精读 · AI Agent 实践 · 项目复现</text>

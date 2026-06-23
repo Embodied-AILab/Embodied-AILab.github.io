@@ -1,10 +1,10 @@
 ---
 const path = Astro.url.pathname;
 const navItems = [
-  { href: '/papers/', label: '论文精读', en: 'Papers' },
-  { href: '/agents/', label: 'Agent 实践', en: 'Agents' },
-  { href: '/projects/', label: '项目复现', en: 'Projects' },
-  { href: '/about/', label: '关于', en: 'About' }
+  { href: '/papers/', label: '论文精读' },
+  { href: '/agents/', label: 'Agent 实践' },
+  { href: '/projects/', label: '项目复现' },
+  { href: '/about/', label: '关于' }
 ];
 const isActive = (href: string) => path === href || (path.startsWith(href) && href !== '/');
 ---
@@ -26,7 +26,6 @@ const isActive = (href: string) => path === href || (path.startsWith(href) && hr
       {navItems.map((item) => (
         <a class:list={[isActive(item.href) && 'active']} href={item.href}>
           <span>{item.label}</span>
-          <small>{item.en}</small>
         </a>
       ))}
     </nav>
@@ -47,8 +46,8 @@ const isActive = (href: string) => path === href || (path.startsWith(href) && hr
       <details class="mobile-menu">
         <summary aria-label="打开导航菜单"><span></span><span></span><span></span></summary>
         <div class="mobile-menu-panel">
-          {navItems.map((item) => <a class:list={[isActive(item.href) && 'active']} href={item.href}>{item.label}<small>{item.en}</small></a>)}
-          <a href="/search/">站内搜索<small>Search</small></a>
+          {navItems.map((item) => <a class:list={[isActive(item.href) && 'active']} href={item.href}>{item.label}</a>)}
+          <a href="/search/">站内搜索</a>
         </div>
       </details>
     </div>

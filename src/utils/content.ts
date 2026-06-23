@@ -1,17 +1,17 @@
 export const sectionMeta = {
   papers: {
     label: '论文精读',
-    shortLabel: 'Papers',
+    shortLabel: '论文',
     description: '具身智能、人形机器人、机器人学习与 Sim-to-Real 论文拆解。'
   },
   agents: {
     label: 'Agent 实践',
-    shortLabel: 'Agents',
+    shortLabel: '实践',
     description: 'AI Agent、Vibe Coding 与智能工具工作流的真实使用记录。'
   },
   projects: {
     label: '项目复现',
-    shortLabel: 'Projects',
+    shortLabel: '项目',
     description: '开源项目阅读、环境搭建、实验过程、失败原因与复现结论。'
   }
 } as const;
