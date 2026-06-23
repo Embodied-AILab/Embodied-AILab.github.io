@@ -1,23 +1,23 @@
-# embodied-lab.github.io 从零上线指南
+# embodied-ailab.github.io 从零上线指南
 
 ## 1. 先确认 GitHub 名称
 
 要使用：
 
 ```text
-https://embodied-lab.github.io/
+https://embodied-ailab.github.io/
 ```
 
 GitHub 用户名或组织名必须是：
 
 ```text
-embodied-lab
+embodied-ailab
 ```
 
 仓库名必须是：
 
 ```text
-embodied-lab.github.io
+embodied-ailab.github.io
 ```
 
 建议使用 GitHub 组织承载网站，后续可以邀请协作者，也不会与个人账号内容混在一起。
@@ -27,17 +27,17 @@ embodied-lab.github.io
 登录 GitHub 后，新建组织并尝试使用：
 
 ```text
-embodied-lab
+embodied-ailab
 ```
 
 如果该名称已被占用，就无法获得完全相同的 GitHub Pages 地址，需要更换组织名和本项目中的站点地址。
 
 ## 3. 创建仓库
 
-在 `embodied-lab` 组织下创建公开仓库：
+在 `embodied-ailab` 组织下创建公开仓库：
 
 ```text
-embodied-lab.github.io
+embodied-ailab.github.io
 ```
 
 不要勾选自动生成模板文件，保持空仓库即可。
@@ -53,7 +53,7 @@ git init
 git add .
 git commit -m "Initialize EAI-Lab website"
 git branch -M main
-git remote add origin https://github.com/embodied-lab/embodied-lab.github.io.git
+git remote add origin https://github.com/embodied-ailab/embodied-ailab.github.io.git
 git push -u origin main
 ```
 
@@ -94,7 +94,7 @@ GitHub Actions
 在仓库 `Actions` 页面看到绿色对勾后，访问：
 
 ```text
-https://embodied-lab.github.io/
+https://embodied-ailab.github.io/
 ```
 
 ## 7. 切换深浅色主题

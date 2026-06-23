@@ -3,7 +3,7 @@
 基于 Astro、Markdown/MDX 和 GitHub Pages 的中文技术网站，发布地址规划为：
 
 ```text
-https://embodied-lab.github.io/
+https://embodied-ailab.github.io/
 ```
 
 网站包含：
@@ -39,18 +39,18 @@ src/content/projects/
 
 复制同栏目下现有 `.mdx` 文件，修改顶部元数据和正文即可。
 
-## 发布到 embodied-lab.github.io
+## 发布到 embodied-ailab.github.io
 
 要获得该地址，GitHub 用户名或组织名需要是：
 
 ```text
-embodied-lab
+embodied-ailab
 ```
 
 并在该用户或组织下创建公开仓库：
 
 ```text
-embodied-lab.github.io
+embodied-ailab.github.io
 ```
 
 将项目推送到 `main` 分支后，在仓库中选择：
