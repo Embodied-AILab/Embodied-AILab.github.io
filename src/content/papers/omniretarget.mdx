@@ -1,0 +1,31 @@
+---
+title: "OmniRetarget：保持交互的人形全身运动重定向"
+description: "从交互网格、硬约束优化、数据增强到下游强化学习，梳理完整算法链路。"
+pubDate: 2026-06-20
+tags: ["Humanoid", "Motion Retargeting", "Sim-to-Real"]
+featured: true
+paperTitle: "OmniRetarget: Interaction-Preserving Data Generation for Humanoid Whole-Body Loco-Manipulation and Scene Interaction"
+paperUrl: "https://arxiv.org/"
+projectUrl: "https://omniretarget.github.io/"
+venue: "arXiv"
+year: 2026
+readingMinutes: 18
+---
+
+> **一句话概括：** OmniRetarget 不只把人的关节动作迁移到机器人，还显式保留人与物体、地形之间的空间与接触关系。
+
+## 它解决了什么问题
+
+普通运动重定向主要匹配人体和机器人关键点，容易出现脚底滑动、身体穿透物体、手与物体失去接触等问题。OmniRetarget 将机器人、物体和地形统一放入交互网格，再在硬约束下逐帧优化机器人姿态。
+
+## 方法主线
+
+算法先构建人体演示的交互网格，再构建机器人目标网格。优化目标是尽量保持两张网格的局部结构一致，同时严格满足关节限制、速度限制、碰撞约束与支撑脚固定约束。
+
+## 为什么数据质量重要
+
+高质量参考动作可以显著减少下游强化学习的奖励工程。策略只需追踪身体和物体状态，再配合少量平滑与安全约束，就能学习复杂的移动操作动作。
+
+## 方法局限
+
+当前方法主要采用逐帧优化。面对来自视频的高噪声动作时，局部误差可能沿时间累积；此外，运动学可行并不等于动力学上一定容易执行，仍需要强化学习补足真实动力学。

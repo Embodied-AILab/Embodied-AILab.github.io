@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+
+const entries = (await getCollection('projects', ({ data }) => import.meta.env.PROD ? data.draft !== true : true))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="项目复现" description="沉淀开源项目阅读、环境搭建、训练实验、失败原因与阶段性结论。">
+  <section class="listing-hero shell">
+    <div class="listing-index">PROJECTS / 03</div>
+    <h1>项目复现</h1>
+    <p>沉淀开源项目阅读、环境搭建、训练实验、失败原因与阶段性结论。</p>
+    <div class="listing-meta"><span>{String(entries.length).padStart(2, '0')} 篇内容</span><i></i><span>Reproduction · Experiment · Notes</span></div>
+  </section>
+
+  <section class="shell listing-section">
+    <div class="article-grid-list">
+      {entries.map((entry, index) => <ArticleCard entry={entry} collection="projects" index={index} />)}
+    </div>
+    {entries.length === 0 && <div class="empty-state">内容正在整理中。</div>}
+  </section>
+</BaseLayout>

@@ -1,0 +1,39 @@
+---
+import { entryUrl, formatDate, sectionMeta, type SectionKey } from '../utils/content';
+
+interface Props {
+  entry: any;
+  collection: SectionKey;
+  compact?: boolean;
+  index?: number;
+}
+
+const { entry, collection, compact = false, index } = Astro.props;
+const data = entry.data;
+const meta = sectionMeta[collection];
+const tone = collection === 'papers' ? 'paper' : collection === 'agents' ? 'agent' : 'project';
+---
+
+<article class:list={['article-card', tone, compact && 'compact']}>
+  <a class="article-card-link" href={entryUrl(collection, entry.id)} aria-label={`阅读：${data.title}`}>
+    <div class="card-topline">
+      <div class="card-category"><span class="category-dot"></span>{meta.label}</div>
+      <time datetime={data.pubDate.toISOString()}>{formatDate(data.pubDate)}</time>
+    </div>
+
+    <div class="card-main">
+      {typeof index === 'number' && <span class="card-index">{String(index + 1).padStart(2, '0')}</span>}
+      <div>
+        <h3>{data.title}</h3>
+        <p>{data.description}</p>
+      </div>
+    </div>
+
+    <div class="card-bottom">
+      <div class="card-tags">
+        {data.tags?.slice(0, 3).map((tag: string) => <span>{tag}</span>)}
+      </div>
+      <span class="card-arrow" aria-hidden="true">↗</span>
+    </div>
+  </a>
+</article>

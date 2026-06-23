@@ -1,0 +1,21 @@
+---
+title: "EAI-Lab 建站记录：Astro × GitHub Pages"
+description: "记录内容结构、静态部署、搜索实现与后续迁移自定义域名的过程。"
+pubDate: 2026-06-23
+tags: ["Astro", "GitHub Pages", "Website"]
+featured: false
+status: "进行中"
+readingMinutes: 6
+---
+
+## 第一版目标
+
+网站第一版使用 embodied-lab.github.io，只保留论文精读、Agent 实践、项目复现、关于和搜索五个入口。先保证内容结构稳定，再逐步增加 RSS、评论或自定义域名。
+
+## 为什么选 Astro
+
+Astro 适合以 Markdown 和 MDX 为主的内容网站，默认生成静态页面，部署到 GitHub Pages 后不需要服务器或数据库。
+
+## 发布流程
+
+文章提交到 GitHub 仓库后，GitHub Actions 自动安装依赖、构建静态页面并发布。后续若绑定独立域名，只需修改站点地址和 DNS，不需要重写网站。

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#171717"/>
+  <g opacity=".14" stroke="#f4f2ec">
+    <path d="M0 90h1200M0 180h1200M0 270h1200M0 360h1200M0 450h1200M0 540h1200"/>
+    <path d="M100 0v630M200 0v630M300 0v630M400 0v630M500 0v630M600 0v630M700 0v630M800 0v630M900 0v630M1000 0v630M1100 0v630"/>
+  </g>
+  <circle cx="1010" cy="165" r="105" fill="none" stroke="#9b98ff" stroke-width="3"/>
+  <ellipse cx="1010" cy="165" rx="150" ry="58" fill="none" stroke="#b8ec69" stroke-width="3" transform="rotate(-22 1010 165)"/>
+  <circle cx="1140" cy="109" r="10" fill="#b8ec69"/>
+  <text x="82" y="190" fill="#b8ec69" font-size="24" letter-spacing="6" font-family="Arial, sans-serif">EMBODIED INTELLIGENCE</text>
+  <text x="76" y="335" fill="#f4f2ec" font-size="112" font-weight="700" font-family="Georgia, serif">EAI-Lab</text>
+  <text x="82" y="413" fill="#c8c5bb" font-size="38" font-family="Arial, sans-serif">具身智能研究室</text>
+  <text x="82" y="503" fill="#8f8b83" font-size="27" font-family="Arial, sans-serif">论文精读 · AI Agent 实践 · 项目复现</text>
+  <text x="82" y="570" fill="#8f8b83" font-size="20" font-family="monospace">embodied-lab.github.io</text>
+</svg>

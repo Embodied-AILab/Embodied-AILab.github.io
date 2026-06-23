@@ -1,0 +1,75 @@
+---
+const path = Astro.url.pathname;
+const navItems = [
+  { href: '/papers/', label: '论文精读', en: 'Papers' },
+  { href: '/agents/', label: 'Agent 实践', en: 'Agents' },
+  { href: '/projects/', label: '项目复现', en: 'Projects' },
+  { href: '/about/', label: '关于', en: 'About' }
+];
+const isActive = (href: string) => path === href || (path.startsWith(href) && href !== '/');
+---
+
+<header class="site-header">
+  <div class="header-inner shell">
+    <a class="brand" href="/" aria-label="EAI-Lab 首页">
+      <span class="brand-glyph" aria-hidden="true">
+        <span class="glyph-core">E</span>
+        <span class="glyph-orbit"></span>
+      </span>
+      <span class="brand-copy">
+        <strong>EAI-Lab</strong>
+        <small>具身智能研究室</small>
+      </span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="主导航">
+      {navItems.map((item) => (
+        <a class:list={[isActive(item.href) && 'active']} href={item.href}>
+          <span>{item.label}</span>
+          <small>{item.en}</small>
+        </a>
+      ))}
+    </nav>
+
+    <div class="header-tools">
+      <a class:list={['icon-button', 'search-button', path === '/search/' && 'active']} href="/search/" aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m15.4 15.4 4.3 4.3"></path></svg>
+      </a>
+
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换到深色模式" title="切换深浅色模式">
+        <span class="theme-track" aria-hidden="true">
+          <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.6"></circle><path d="M12 2.5v2.1M12 19.4v2.1M4.6 4.6l1.5 1.5M17.9 17.9l1.5 1.5M2.5 12h2.1M19.4 12h2.1M4.6 19.4l1.5-1.5M17.9 6.1l1.5-1.5"></path></svg>
+          <svg class="moon" viewBox="0 0 24 24"><path d="M20 15.1A8.2 8.2 0 0 1 8.9 4 8.6 8.6 0 1 0 20 15.1Z"></path></svg>
+          <span class="theme-knob"></span>
+        </span>
+      </button>
+
+      <details class="mobile-menu">
+        <summary aria-label="打开导航菜单"><span></span><span></span><span></span></summary>
+        <div class="mobile-menu-panel">
+          {navItems.map((item) => <a class:list={[isActive(item.href) && 'active']} href={item.href}>{item.label}<small>{item.en}</small></a>)}
+          <a href="/search/">站内搜索<small>Search</small></a>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  (() => {
+    const key = 'embodied-lab-theme';
+    const root = document.documentElement;
+    const button = document.getElementById('theme-toggle');
+    const meta = document.querySelector('meta[name="theme-color"]');
+
+    const apply = (theme) => {
+      root.dataset.theme = theme;
+      root.style.colorScheme = theme;
+      localStorage.setItem(key, theme);
+      if (button) button.setAttribute('aria-label', theme === 'dark' ? '切换到浅色模式' : '切换到深色模式');
+      if (meta) meta.setAttribute('content', theme === 'dark' ? '#0d0f12' : '#f4f2ec');
+    };
+
+    button?.addEventListener('click', () => apply(root.dataset.theme === 'dark' ? 'light' : 'dark'));
+  })();
+</script>

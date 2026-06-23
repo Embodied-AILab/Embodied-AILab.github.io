@@ -1,0 +1,31 @@
+---
+title: "FACET：让腿式机器人按可调阻抗响应外力"
+description: "理解虚拟柔顺参考、时间平滑、Teacher–Student 与抗推行为之间的关系。"
+pubDate: 2026-06-16
+tags: ["Compliant Control", "Reinforcement Learning", "Humanoid"]
+featured: true
+paperTitle: "FACET: Force-Adaptive Control via Impedance Reference Tracking for Legged Robots"
+paperUrl: "https://arxiv.org/abs/2505.06883"
+projectUrl: "https://facet.pages.dev/"
+venue: "arXiv"
+year: 2025
+readingMinutes: 16
+---
+
+> **核心思路：** 先定义机器人受到外力后应该怎样移动，再让强化学习策略通过腿部与全身协调实现这种运动。
+
+## 传统抗推策略的问题
+
+普通速度或位置跟踪策略会把外力造成的偏移视为误差，因此倾向于立即抵抗。即使训练中加入随机推力，只要目标仍是严格回到原状态，策略就可能变得更僵硬。
+
+## FACET 做了什么
+
+FACET 在策略之外运行一个虚拟柔顺参考系统。它根据目标位置、刚度、阻尼和外部作用生成理想的重心位置与速度，策略学习追踪这段参考，而不是直接追踪外力。
+
+## 为什么需要时间平滑
+
+从 episode 起点持续计算参考会产生长期漂移；每一步重新计算又会过于短视。FACET 从多个历史时刻同时生成参考，使目标既贴近当前状态，又保留完整的受力趋势。
+
+## 对工程实现的启发
+
+柔顺行为不能只依靠降低关节 PD 增益。更关键的是在任务层明确规定外力与身体位移之间的关系，并把柔顺参数作为策略输入。

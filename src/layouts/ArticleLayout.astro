@@ -1,0 +1,71 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { formatDate, sectionMeta, type SectionKey } from '../utils/content';
+
+interface Props {
+  entry: any;
+  collection: SectionKey;
+  headings?: Array<{ depth: number; slug: string; text: string }>;
+  minutes: number;
+}
+
+const { entry, collection, headings = [], minutes } = Astro.props;
+const meta = sectionMeta[collection];
+const visibleHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const data = entry.data;
+---
+
+<BaseLayout title={data.title} description={data.description} image={data.cover}>
+  <div class="article-page shell">
+    <nav class="breadcrumb" aria-label="面包屑">
+      <a href="/">首页</a><span>→</span><a href={`/${collection}/`}>{meta.label}</a>
+    </nav>
+
+    <header class="article-header">
+      <div class="article-kicker"><span>{meta.shortLabel}</span><i></i><span>{meta.label}</span></div>
+      <h1>{data.title}</h1>
+      <p class="article-deck">{data.description}</p>
+
+      <div class="article-meta-row">
+        <span>{formatDate(data.pubDate)}</span>
+        <span>{minutes} 分钟阅读</span>
+        <span>{data.author}</span>
+        {collection === 'projects' && data.status && <span class="status-pill"><i></i>{data.status}</span>}
+      </div>
+
+      {data.tags?.length > 0 && (
+        <div class="tag-row" aria-label="文章标签">
+          {data.tags.map((tag: string) => <span class="tag">{tag}</span>)}
+        </div>
+      )}
+
+      {(data.paperUrl || data.projectUrl || data.codeUrl || data.repoUrl) && (
+        <div class="article-actions">
+          {data.paperUrl && <a class="button primary small" href={data.paperUrl} target="_blank" rel="noreferrer">论文原文 <span>↗</span></a>}
+          {data.projectUrl && <a class="button ghost small" href={data.projectUrl} target="_blank" rel="noreferrer">项目主页 <span>↗</span></a>}
+          {data.codeUrl && <a class="button ghost small" href={data.codeUrl} target="_blank" rel="noreferrer">开源代码 <span>↗</span></a>}
+          {data.repoUrl && <a class="button ghost small" href={data.repoUrl} target="_blank" rel="noreferrer">项目仓库 <span>↗</span></a>}
+        </div>
+      )}
+    </header>
+
+    <div class="article-divider"><span></span><i></i></div>
+
+    <div class="article-layout">
+      <article class="prose"><slot /></article>
+
+      {visibleHeadings.length > 0 && (
+        <aside class="toc" aria-label="本页目录">
+          <div class="toc-title">ON THIS PAGE</div>
+          <ol>
+            {visibleHeadings.map((heading) => (
+              <li class:list={[heading.depth === 3 && 'toc-sub']}>
+                <a href={`#${heading.slug}`}>{heading.text}</a>
+              </li>
+            ))}
+          </ol>
+        </aside>
+      )}
+    </div>
+  </div>
+</BaseLayout>
