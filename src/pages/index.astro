@@ -11,15 +11,13 @@ const modules = [
 
 <BaseLayout>
   <section class="home-lab shell">
-    <div class="home-profile">
-      <div class="profile-avatar">
-        <img src="/avatar.jpg" alt="EAI-Lab 头像" loading="eager" />
-      </div>
-      <div class="home-profile-copy">
-        <p>EAI-Lab</p>
+    <header class="home-intro">
+      <p>EAI-Lab</p>
+      <div>
         <h1>具身智能研究室</h1>
+        <span>记录具身智能论文精读、Agent 实践和项目复现过程。</span>
       </div>
-    </div>
+    </header>
 
     <nav class="home-index" aria-label="首页入口">
       {modules.map((item) => (
