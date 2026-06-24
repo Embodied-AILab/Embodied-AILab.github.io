@@ -27,16 +27,12 @@ const modules = [
   { href: '/agents/', title: 'Agent 实践', tone: 'agent', latest: latestBySection.agents },
   { href: '/projects/', title: '项目复现', tone: 'project', latest: latestBySection.projects },
   {
-    href: '/about/',
     title: '关于这个网站',
     tone: 'about',
-    latest: [
-      {
-        href: '/about/',
-        title: '站点说明与内容方向',
-        description: '记录具身智能论文、Agent 工程实践和项目复现过程。',
-        label: '站点说明'
-      }
+    summary: [
+      '这是一个具身智能学习与实践记录站。',
+      '重点写论文精读、Agent 工程实践、项目复现。',
+      '内容优先追求可验证、可复现、可回看。'
     ]
   }
 ];
@@ -55,20 +51,32 @@ const modules = [
     <section class="home-index" aria-label="首页入口">
       {modules.map((item) => (
         <article class:list={['home-module', item.tone]}>
-          <a class="home-module-title" href={item.href} aria-label={`进入${item.title}`}>
-            <h2>{item.title}</h2>
-            <span aria-hidden="true">↗</span>
-          </a>
+          {item.href ? (
+            <a class="home-module-title" href={item.href} aria-label={`进入${item.title}`}>
+              <h2>{item.title}</h2>
+              <span aria-hidden="true">↗</span>
+            </a>
+          ) : (
+            <div class="home-module-title static">
+              <h2>{item.title}</h2>
+            </div>
+          )}
 
-          <div class="home-latest-list">
-            {item.latest.map((entry) => (
-              <a class="home-latest-item" href={entry.href} aria-label={`阅读：${entry.title}`}>
-                <span>{entry.label}</span>
-                <strong>{entry.title}</strong>
-                <p>{entry.description}</p>
-              </a>
-            ))}
-          </div>
+          {item.latest ? (
+            <div class="home-latest-list">
+              {item.latest.map((entry) => (
+                <a class="home-latest-item" href={entry.href} aria-label={`阅读：${entry.title}`}>
+                  <span>{entry.label}</span>
+                  <strong>{entry.title}</strong>
+                  <p>{entry.description}</p>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div class="home-about-note">
+              {item.summary.map((line) => <p>{line}</p>)}
+            </div>
+          )}
         </article>
       ))}
     </section>
