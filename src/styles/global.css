@@ -42,7 +42,7 @@
   --fs-home: clamp(38px, 4.3vw, 52px);
   --fs-entry: clamp(26px, 2.5vw, 34px);
   --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
-  --display: "EAI Brush", "Ma Shan Zheng", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", cursive;
+  --display: "Avenir Next", Avenir, "Helvetica Neue", Arial, "EAI Brush", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
