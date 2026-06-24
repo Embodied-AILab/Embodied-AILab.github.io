@@ -439,6 +439,11 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
 .footer-main { display: grid; grid-template-columns: 1fr auto; gap: 80px; padding-block: 55px 36px; }
 .footer-wordmark { color: var(--ink); font-family: var(--display); font-size: var(--fs-3xl); font-weight: 800; letter-spacing: 0; }
 .footer-intro p { max-width: 540px; margin: 11px 0 0; color: var(--muted); font-size: var(--fs-sm); }
+.footer-social { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 17px; color: var(--muted); font-size: var(--fs-sm); line-height: 1.7; }
+.footer-social a { color: var(--accent); }
+.footer-social a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.footer-social span { color: var(--muted); }
+.footer-social span[aria-hidden='true'] { color: var(--line-strong); }
 .footer-nav { display: grid; grid-template-columns: repeat(2, 120px); gap: 40px; }
 .footer-nav div { display: flex; flex-direction: column; gap: 8px; }
 .footer-nav span { margin-bottom: 4px; color: var(--faint); font-family: var(--mono); font-size: var(--fs-micro); letter-spacing: .08em; }
