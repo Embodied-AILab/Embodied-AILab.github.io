@@ -189,11 +189,10 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
 .home-module {
   --module-color: var(--accent);
   position: relative;
-  min-height: 148px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 38px;
-  align-items: end;
-  gap: 22px;
+  min-height: 282px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
   padding: 26px;
   border-right: 1px solid var(--line-strong);
   border-bottom: 1px solid var(--line-strong);
@@ -215,6 +214,12 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--module-color), transparent 70%);
 }
 .home-module:hover::before { opacity: 1; }
+.home-module-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
 .home-module h2 {
   margin: 0;
   color: var(--ink);
@@ -224,9 +229,10 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
   line-height: 1.12;
   letter-spacing: 0;
 }
-.home-module > span {
+.home-module-title > span {
   width: 38px;
   height: 38px;
+  flex: 0 0 auto;
   display: grid;
   place-items: center;
   border: 1px solid var(--line-strong);
@@ -236,12 +242,40 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
   font-size: var(--fs-md);
   transition: transform .2s ease, border-color .2s ease, background .2s ease, color .2s ease;
 }
-.home-module:hover > span {
+.home-module-title:hover > span {
   transform: translate(2px, -2px);
   border-color: var(--module-color);
   background: var(--module-color);
   color: var(--surface);
 }
+.home-latest-list {
+  display: grid;
+  gap: 0;
+}
+.home-latest-item {
+  display: grid;
+  gap: 6px;
+  padding: 15px 0 14px;
+  border-top: 1px solid color-mix(in srgb, var(--line-strong), transparent 25%);
+}
+.home-latest-item span {
+  color: var(--module-color);
+  font-family: var(--mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .04em;
+}
+.home-latest-item strong {
+  color: var(--ink);
+  font-size: var(--fs-lg);
+  line-height: 1.35;
+}
+.home-latest-item p {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+.home-latest-item:hover strong { color: var(--module-color); }
 .home-module.paper { --module-color: var(--paper); }
 .home-module.agent { --module-color: var(--agent); }
 .home-module.project { --module-color: var(--project); }
@@ -404,7 +438,7 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
   .home-lab { gap: 30px; padding-block: 34px 58px; }
   .home-intro { padding-bottom: 28px; }
   .home-index { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .home-module { min-height: 136px; }
+  .home-module { min-height: 260px; }
   .article-layout { grid-template-columns: 1fr; }
   .toc { display: none; }
   .about-layout { grid-template-columns: 1fr; gap: 35px; }
@@ -428,8 +462,11 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
   .home-lab { gap: 22px; padding-block: 24px 42px; }
   .home-intro span { margin-top: 10px; font-size: var(--fs-md); }
   .home-index { grid-template-columns: 1fr; }
-  .home-module { min-height: 84px; grid-template-columns: minmax(0, 1fr) 34px; gap: 12px; padding: 18px 16px; }
-  .home-module > span { width: 36px; height: 36px; font-size: var(--fs-sm); }
+  .home-module { min-height: 0; gap: 18px; padding: 20px 17px; }
+  .home-module-title { align-items: center; }
+  .home-module-title > span { width: 36px; height: 36px; font-size: var(--fs-sm); }
+  .home-latest-item { padding-block: 13px; }
+  .home-latest-item strong { font-size: var(--fs-body); }
   .section-header { grid-template-columns: 1fr; gap: 12px; align-items: start; }
   .section-link { margin-top: 3px; }
   .article-grid-list { grid-template-columns: 1fr; }
@@ -448,7 +485,7 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
 
 @media (max-width: 440px) {
   .search-button { display: none; }
-  .home-module { min-height: 88px; }
+  .home-module { padding-inline: 16px; }
   .article-card-link { padding: 18px; }
   .card-main { grid-template-columns: 1fr; }
   .card-index { display: none; }
