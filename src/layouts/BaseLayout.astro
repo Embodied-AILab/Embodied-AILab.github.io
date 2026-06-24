@@ -13,7 +13,7 @@ interface Props {
 const {
   title = 'EAI-Lab｜具身智能研究室',
   description = '具身智能论文精读、AI Agent / Vibe Coding 实践与项目复现。',
-  image = '/og-default.svg',
+  image = '/avatar.jpg',
   noIndex = false
 } = Astro.props;
 
@@ -31,7 +31,7 @@ const socialImage = new URL(image, Astro.site ?? Astro.url.origin);
     <meta name="theme-color" content="#f4f2ec" />
     {noIndex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/jpeg" href="/avatar.jpg" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
