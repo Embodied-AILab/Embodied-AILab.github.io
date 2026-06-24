@@ -32,7 +32,7 @@ const rainParticles = Array.from({ length: 86 }, (_, index) => ({
   x: (index * 37 + 5) % 104 - 2,
   delay: ((index * 19 + 2) % 120) / 10,
   duration: 0.72 + ((index * 7) % 9) * 0.06,
-  scale: 0.92 + ((index * 11) % 8) * 0.08,
+  scale: 0.75 + ((index * 11) % 8) * 0.05,
   drift: (index * 13 + 17) % 44
 }));
 ---

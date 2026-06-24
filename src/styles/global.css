@@ -25,8 +25,8 @@
   --paper: #6762c8;
   --agent: #db6f48;
   --project: #208a78;
-  --rain-peak: .78;
-  --rain-mid: .66;
+  --rain-peak: .62;
+  --rain-mid: .46;
   --shadow-sm: 0 12px 30px rgba(37, 34, 27, .06);
   --shadow-lg: 0 34px 90px rgba(35, 31, 23, .12);
   --shell: 1220px;
@@ -135,11 +135,11 @@ html[data-ambient-sakura='on'] .ambient-layer-sakura {
   box-shadow: 0 0 12px rgba(255, 255, 255, .7);
 }
 .ambient-layer-rain span {
-  width: 2px;
-  height: 58px;
+  width: 1px;
+  height: 46px;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(32, 138, 120, 0), rgba(32, 138, 120, .24) 36%, rgba(103, 98, 200, .7));
-  box-shadow: 0 0 11px rgba(103, 98, 200, .18);
+  background: linear-gradient(180deg, rgba(32, 138, 120, 0), rgba(32, 138, 120, .18) 36%, rgba(103, 98, 200, .56));
+  box-shadow: 0 0 7px rgba(103, 98, 200, .12);
 }
 .ambient-layer-sakura span {
   width: 11px;
@@ -165,8 +165,8 @@ html[data-theme='dark'] .ambient-layer-snow span {
   box-shadow: 0 0 12px rgba(170, 166, 242, .25);
 }
 html[data-theme='dark'] .ambient-layer-rain span {
-  background: linear-gradient(180deg, rgba(90, 213, 191, 0), rgba(90, 213, 191, .18) 36%, rgba(170, 166, 242, .62));
-  box-shadow: 0 0 12px rgba(170, 166, 242, .18);
+  background: linear-gradient(180deg, rgba(90, 213, 191, 0), rgba(90, 213, 191, .14) 36%, rgba(170, 166, 242, .5));
+  box-shadow: 0 0 8px rgba(170, 166, 242, .12);
 }
 html[data-theme='dark'] .ambient-layer-sakura span {
   background: linear-gradient(135deg, rgba(255, 149, 112, .7), rgba(170, 166, 242, .38));
@@ -676,13 +676,13 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
     --fs-home: clamp(34px, 9vw, 42px);
     --fs-entry: clamp(24px, 7vw, 30px);
     --fs-4xl: clamp(28px, 8vw, 36px);
-    --rain-peak: .54;
-    --rain-mid: .38;
+    --rain-peak: .42;
+    --rain-mid: .28;
   }
   .shell { width: min(calc(100% - 28px), var(--shell)); }
   .ambient-layer-rain span {
-    height: 48px;
-    box-shadow: 0 0 8px rgba(103, 98, 200, .12);
+    height: 36px;
+    box-shadow: 0 0 5px rgba(103, 98, 200, .1);
   }
   .ambient-layer-rain span:nth-child(3n) {
     display: none;
