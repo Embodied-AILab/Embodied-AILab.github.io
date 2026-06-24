@@ -27,6 +27,14 @@ const ambientParticles = Array.from({ length: 34 }, (_, index) => ({
   scale: 0.75 + ((index * 5) % 7) * 0.13,
   drift: (index * 17 + 11) % 100
 }));
+
+const rainParticles = Array.from({ length: 86 }, (_, index) => ({
+  x: (index * 37 + 5) % 104 - 2,
+  delay: ((index * 19 + 2) % 120) / 10,
+  duration: 0.72 + ((index * 7) % 9) * 0.06,
+  scale: 0.92 + ((index * 11) % 8) * 0.08,
+  drift: (index * 13 + 17) % 44
+}));
 ---
 
 <!doctype html>
@@ -79,8 +87,8 @@ const ambientParticles = Array.from({ length: 34 }, (_, index) => ({
       ))}
     </div>
     <div class="ambient-layer ambient-layer-rain" aria-hidden="true">
-      {ambientParticles.map((item) => (
-        <span style={`--x:${item.x}%; --delay:-${item.delay}s; --duration:${item.duration}s; --scale:${item.scale}; --drift:${item.drift - 50}px;`}></span>
+      {rainParticles.map((item) => (
+        <span style={`--x:${item.x}%; --delay:-${item.delay}s; --duration:${item.duration}s; --scale:${item.scale}; --drift:${item.drift - 22}px;`}></span>
       ))}
     </div>
     <div class="ambient-layer ambient-layer-sakura" aria-hidden="true">

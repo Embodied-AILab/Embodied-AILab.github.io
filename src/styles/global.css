@@ -133,10 +133,11 @@ html[data-ambient-sakura='on'] .ambient-layer-sakura {
   box-shadow: 0 0 12px rgba(255, 255, 255, .7);
 }
 .ambient-layer-rain span {
-  width: 1px;
-  height: 34px;
+  width: 2px;
+  height: 58px;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(103, 98, 200, 0), rgba(103, 98, 200, .38));
+  background: linear-gradient(180deg, rgba(32, 138, 120, 0), rgba(32, 138, 120, .24) 36%, rgba(103, 98, 200, .7));
+  box-shadow: 0 0 11px rgba(103, 98, 200, .18);
 }
 .ambient-layer-sakura span {
   width: 11px;
@@ -150,7 +151,7 @@ html[data-ambient-snow='on'] .ambient-layer-snow span {
   animation-delay: var(--delay);
 }
 html[data-ambient-rain='on'] .ambient-layer-rain span {
-  animation: ambient-rain 1.25s linear infinite;
+  animation: ambient-rain var(--duration) linear infinite;
   animation-delay: var(--delay);
 }
 html[data-ambient-sakura='on'] .ambient-layer-sakura span {
@@ -162,7 +163,8 @@ html[data-theme='dark'] .ambient-layer-snow span {
   box-shadow: 0 0 12px rgba(170, 166, 242, .25);
 }
 html[data-theme='dark'] .ambient-layer-rain span {
-  background: linear-gradient(180deg, rgba(170, 166, 242, 0), rgba(170, 166, 242, .42));
+  background: linear-gradient(180deg, rgba(90, 213, 191, 0), rgba(90, 213, 191, .18) 36%, rgba(170, 166, 242, .62));
+  box-shadow: 0 0 12px rgba(170, 166, 242, .18);
 }
 html[data-theme='dark'] .ambient-layer-sakura span {
   background: linear-gradient(135deg, rgba(255, 149, 112, .7), rgba(170, 166, 242, .38));
@@ -174,9 +176,10 @@ html[data-theme='dark'] .ambient-layer-sakura span {
   100% { opacity: 0; transform: translate3d(var(--drift), 112vh, 0) scale(var(--scale)); }
 }
 @keyframes ambient-rain {
-  0% { opacity: 0; transform: translate3d(24px, -14vh, 0) rotate(14deg) scaleY(var(--scale)); }
-  10% { opacity: .62; }
-  100% { opacity: 0; transform: translate3d(calc(var(--drift) - 28px), 116vh, 0) rotate(14deg) scaleY(var(--scale)); }
+  0% { opacity: 0; transform: translate3d(18px, -18vh, 0) rotate(15deg) scaleY(var(--scale)); }
+  8% { opacity: .78; }
+  84% { opacity: .66; }
+  100% { opacity: 0; transform: translate3d(calc(var(--drift) - 44px), 118vh, 0) rotate(15deg) scaleY(var(--scale)); }
 }
 @keyframes ambient-sakura {
   0% { opacity: 0; transform: translate3d(0, -12vh, 0) rotate(0deg) scale(var(--scale)); }
