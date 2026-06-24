@@ -20,6 +20,13 @@ const {
 const fullTitle = title.includes('EAI-Lab') ? title : `${title}｜EAI-Lab`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
 const socialImage = new URL(image, Astro.site ?? Astro.url.origin);
+const ambientParticles = Array.from({ length: 34 }, (_, index) => ({
+  x: (index * 29 + 7) % 100,
+  delay: (index * 13 + 3) % 22,
+  duration: 11 + ((index * 7) % 11),
+  scale: 0.75 + ((index * 5) % 7) * 0.13,
+  drift: (index * 17 + 11) % 100
+}));
 ---
 
 <!doctype html>
@@ -48,11 +55,21 @@ const socialImage = new URL(image, Astro.site ?? Astro.url.origin);
           : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         document.documentElement.dataset.theme = theme;
         document.documentElement.style.colorScheme = theme;
+
+        const ambientKey = 'embodied-ailab-ambient';
+        const ambientSaved = localStorage.getItem(ambientKey);
+        const ambient = ['none', 'snow', 'rain', 'sakura'].includes(ambientSaved) ? ambientSaved : 'none';
+        document.documentElement.dataset.ambient = ambient;
       })();
     </script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">跳到正文</a>
+    <div class="ambient-layer" aria-hidden="true">
+      {ambientParticles.map((item) => (
+        <span style={`--x:${item.x}%; --delay:-${item.delay}s; --duration:${item.duration}s; --scale:${item.scale}; --drift:${item.drift - 50}px;`}></span>
+      ))}
+    </div>
     <Header />
     <main id="main-content">
       <slot />
