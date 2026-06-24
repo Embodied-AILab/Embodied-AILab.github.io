@@ -9,11 +9,10 @@ https://embodied-ailab.github.io/
 网站包含：
 
 ```text
-/papers    论文精读
-/agents    AI Agent / Vibe Coding
-/projects  项目复现
-/about     关于网站
-/search    站内搜索
+/directions  研究方向
+/projects    项目复现
+/about       关于网站
+/search      站内搜索
 ```
 
 ## 本地运行
@@ -32,8 +31,7 @@ npm run dev
 内容保存在：
 
 ```text
-src/content/papers/
-src/content/agents/
+src/content/research/
 src/content/projects/
 ```
 

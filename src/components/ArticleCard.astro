@@ -1,5 +1,6 @@
 ---
 import { entryUrl, formatDate, sectionMeta, type SectionKey } from '../utils/content';
+import { getResearchDirection } from '../data/researchDirections';
 
 interface Props {
   entry: any;
@@ -11,13 +12,15 @@ interface Props {
 const { entry, collection, compact = false, index } = Astro.props;
 const data = entry.data;
 const meta = sectionMeta[collection];
-const tone = collection === 'papers' ? 'paper' : collection === 'agents' ? 'agent' : 'project';
+const direction = collection === 'research' ? getResearchDirection(data.direction) : undefined;
+const categoryLabel = direction?.label ?? meta.label;
+const tone = collection === 'research' ? 'research' : 'project';
 ---
 
 <article class:list={['article-card', tone, compact && 'compact']}>
   <a class="article-card-link" href={entryUrl(collection, entry.id)} aria-label={`阅读：${data.title}`}>
     <div class="card-topline">
-      <div class="card-category"><span class="category-dot"></span>{meta.label}</div>
+      <div class="card-category"><span class="category-dot"></span>{categoryLabel}</div>
       <time datetime={data.pubDate.toISOString()}>{formatDate(data.pubDate)}</time>
     </div>
 

@@ -1,37 +1,63 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { entryUrl, formatDate, type SectionKey } from '../utils/content';
+import { entryUrl, formatDate } from '../utils/content';
+import { researchDirections } from '../data/researchDirections';
 
 const filter = ({ data }: { data: { draft?: boolean } }) => import.meta.env.PROD ? data.draft !== true : true;
-const sectionKeys: SectionKey[] = ['papers', 'agents', 'projects'];
-const collections = await Promise.all(sectionKeys.map((key) => getCollection(key, filter)));
+const [research, projects] = await Promise.all([
+  getCollection('research', filter),
+  getCollection('projects', filter)
+]);
 
-const latestBySection = Object.fromEntries(
-  sectionKeys.map((key, index) => [
-    key,
-    collections[index]
+const latestByDirection = Object.fromEntries(
+  researchDirections.map((direction) => [
+    direction.slug,
+    research
+      .filter((entry) => entry.data.direction === direction.slug)
       .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
       .slice(0, 2)
       .map((entry) => ({
-        href: entryUrl(key, entry.id),
+        href: entryUrl('research', entry.id),
         title: entry.data.title,
         description: entry.data.description,
         label: formatDate(entry.data.pubDate)
       }))
   ])
-) as Record<SectionKey, Array<{ href: string; title: string; description: string; label: string }>>;
+) as Record<string, Array<{ href: string; title: string; description: string; label: string }>>;
+
+const latestProjects = projects
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 2)
+  .map((entry) => ({
+    href: entryUrl('projects', entry.id),
+    title: entry.data.title,
+    description: entry.data.description,
+    label: formatDate(entry.data.pubDate)
+  }));
 
 const modules = [
-  { href: '/papers/', title: '论文精读', tone: 'paper', latest: latestBySection.papers },
-  { href: '/agents/', title: 'Agent 实践', tone: 'agent', latest: latestBySection.agents },
-  { href: '/projects/', title: '项目复现', tone: 'project', latest: latestBySection.projects },
+  ...researchDirections.map((direction) => ({
+    href: `/directions/${direction.slug}/`,
+    title: direction.label,
+    tone: 'research',
+    color: direction.color,
+    latest: latestByDirection[direction.slug],
+    summary: [direction.description, '内容正在整理中。']
+  })),
+  {
+    href: '/projects/',
+    title: '项目复现',
+    tone: 'project',
+    latest: latestProjects,
+    summary: ['记录开源项目阅读、环境搭建、实验过程和复现结论。']
+  },
   {
     title: '关于这个网站',
     tone: 'about',
     summary: [
       '这是一个具身智能学习与实践记录站。',
-      '重点写论文精读、Agent 工程实践、项目复现。',
+      '重点整理研究方向、核心论文和项目复现。',
       '内容优先追求可验证、可复现、可回看。'
     ]
   }
@@ -44,13 +70,13 @@ const modules = [
       <p>EAI-Lab</p>
       <div>
         <h1>具身智能研究室</h1>
-        <span>记录具身智能论文精读、Agent 实践和项目复现过程。</span>
+        <span>按研究方向记录具身智能论文、算法和项目复现过程。</span>
       </div>
     </header>
 
     <section class="home-index" aria-label="首页入口">
       {modules.map((item) => (
-        <article class:list={['home-module', item.tone]}>
+        <article class:list={['home-module', item.tone]} style={item.color ? `--module-color: ${item.color}` : undefined}>
           {item.href ? (
             <a class="home-module-title" href={item.href} aria-label={`进入${item.title}`}>
               <h2>{item.title}</h2>
@@ -64,13 +90,13 @@ const modules = [
 
           {item.latest ? (
             <div class="home-latest-list">
-              {item.latest.map((entry) => (
+              {item.latest.length > 0 ? item.latest.map((entry) => (
                 <a class="home-latest-item" href={entry.href} aria-label={`阅读：${entry.title}`}>
                   <span>{entry.label}</span>
                   <strong>{entry.title}</strong>
                   <p>{entry.description}</p>
                 </a>
-              ))}
+              )) : item.summary?.map((line) => <p class="home-empty-line">{line}</p>)}
             </div>
           ) : (
             <div class="home-about-note">

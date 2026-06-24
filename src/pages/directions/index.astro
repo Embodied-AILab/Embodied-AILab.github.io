@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { entryUrl, formatDate } from '../../utils/content';
+import { researchDirections } from '../../data/researchDirections';
+
+const entries = (await getCollection('research', ({ data }) => import.meta.env.PROD ? data.draft !== true : true))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const cards = researchDirections.map((direction, index) => {
+  const latest = entries
+    .filter((entry) => entry.data.direction === direction.slug)
+    .slice(0, 2)
+    .map((entry) => ({
+      href: entryUrl('research', entry.id),
+      title: entry.data.title,
+      description: entry.data.description,
+      date: formatDate(entry.data.pubDate)
+    }));
+
+  return {
+    ...direction,
+    index: String(index + 1).padStart(2, '0'),
+    count: entries.filter((entry) => entry.data.direction === direction.slug).length,
+    latest
+  };
+});
+---
+
+<BaseLayout title="研究方向" description="按具身智能技术方向整理论文、算法和项目笔记。">
+  <section class="listing-hero shell">
+    <div class="listing-index">01</div>
+    <h1>研究方向</h1>
+    <p>把具身智能内容按技术问题重新组织，方便长期积累、检索和复盘。</p>
+    <div class="listing-meta"><span>{String(entries.length).padStart(2, '0')} 篇内容</span><i></i><span>数据重定向 · 运动跟踪 · Loco-Manip · 仿真器</span></div>
+  </section>
+
+  <section class="shell listing-section">
+    <div class="direction-grid">
+      {cards.map((card) => (
+        <article class="direction-card" style={`--module-color: ${card.color}`}>
+          <a class="direction-card-head" href={`/directions/${card.slug}/`} aria-label={`查看${card.label}`}>
+            <span>{card.index}</span>
+            <h2>{card.label}</h2>
+            <i aria-hidden="true">↗</i>
+          </a>
+          <p>{card.description}</p>
+          <div class="direction-card-meta">{card.count > 0 ? `${card.count} 篇内容` : '内容整理中'}</div>
+          {card.latest.length > 0 && (
+            <div class="direction-latest">
+              {card.latest.map((entry) => (
+                <a href={entry.href}>
+                  <span>{entry.date}</span>
+                  <strong>{entry.title}</strong>
+                </a>
+              ))}
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

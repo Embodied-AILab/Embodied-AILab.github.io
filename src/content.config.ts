@@ -1,6 +1,9 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { researchDirections } from './data/researchDirections';
+
+const directionSlugs = researchDirections.map((direction) => direction.slug) as [string, ...string[]];
 
 const baseSchema = z.object({
   title: z.string(),
@@ -15,22 +18,16 @@ const baseSchema = z.object({
   readingMinutes: z.number().int().positive().optional()
 });
 
-const papers = defineCollection({
-  loader: glob({ base: './src/content/papers', pattern: '**/*.{md,mdx}' }),
+const research = defineCollection({
+  loader: glob({ base: './src/content/research', pattern: '**/*.{md,mdx}' }),
   schema: baseSchema.extend({
+    direction: z.enum(directionSlugs),
     paperTitle: z.string().optional(),
     paperUrl: z.string().url().optional(),
     projectUrl: z.string().url().optional(),
     codeUrl: z.string().url().optional(),
     venue: z.string().optional(),
     year: z.number().int().optional()
-  })
-});
-
-const agents = defineCollection({
-  loader: glob({ base: './src/content/agents', pattern: '**/*.{md,mdx}' }),
-  schema: baseSchema.extend({
-    tools: z.array(z.string()).default([])
   })
 });
 
@@ -42,4 +39,4 @@ const projects = defineCollection({
   })
 });
 
-export const collections = { papers, agents, projects };
+export const collections = { research, projects };

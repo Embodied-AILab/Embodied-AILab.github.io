@@ -1,6 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import { formatDate, sectionMeta, type SectionKey } from '../utils/content';
+import { getResearchDirection } from '../data/researchDirections';
 
 interface Props {
   entry: any;
@@ -11,18 +12,23 @@ interface Props {
 
 const { entry, collection, headings = [], minutes } = Astro.props;
 const meta = sectionMeta[collection];
-const visibleHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 const data = entry.data;
+const direction = collection === 'research' ? getResearchDirection(data.direction) : undefined;
+const sectionHref = collection === 'research' ? '/directions/' : `/${collection}/`;
+const categoryHref = direction ? `/directions/${direction.slug}/` : sectionHref;
+const categoryLabel = direction?.label ?? meta.label;
+const visibleHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 ---
 
 <BaseLayout title={data.title} description={data.description} image={data.cover}>
   <div class="article-page shell">
     <nav class="breadcrumb" aria-label="面包屑">
-      <a href="/">首页</a><span>→</span><a href={`/${collection}/`}>{meta.label}</a>
+      <a href="/">首页</a><span>→</span><a href={sectionHref}>{meta.label}</a>
+      {direction && <><span>→</span><a href={categoryHref}>{direction.label}</a></>}
     </nav>
 
     <header class="article-header">
-      <div class="article-kicker"><span>{meta.label}</span></div>
+      <div class="article-kicker"><span>{categoryLabel}</span></div>
       <h1>{data.title}</h1>
       <p class="article-deck">{data.description}</p>
 

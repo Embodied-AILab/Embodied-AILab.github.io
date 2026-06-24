@@ -1,13 +1,8 @@
 export const sectionMeta = {
-  papers: {
-    label: '论文精读',
-    shortLabel: '论文',
-    description: '具身智能、人形机器人、机器人学习与 Sim-to-Real 论文拆解。'
-  },
-  agents: {
-    label: 'Agent 实践',
-    shortLabel: '实践',
-    description: 'AI Agent、Vibe Coding 与智能工具工作流的真实使用记录。'
+  research: {
+    label: '研究方向',
+    shortLabel: '方向',
+    description: '围绕具身智能关键技术方向整理论文、算法与实现笔记。'
   },
   projects: {
     label: '项目复现',

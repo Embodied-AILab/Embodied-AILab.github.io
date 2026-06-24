@@ -110,8 +110,7 @@ https://embodied-ailab.github.io/
 在以下目录新增 Markdown 或 MDX 文件：
 
 ```text
-src/content/papers/
-src/content/agents/
+src/content/research/
 src/content/projects/
 ```
 

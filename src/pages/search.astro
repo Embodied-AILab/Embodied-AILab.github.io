@@ -2,24 +2,25 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { entryUrl, sectionMeta } from '../utils/content';
+import { getResearchDirection } from '../data/researchDirections';
 
 const filter = ({ data }: any) => import.meta.env.PROD ? data.draft !== true : true;
-const [papers, agents, projects] = await Promise.all([
-  getCollection('papers', filter),
-  getCollection('agents', filter),
+const [research, projects] = await Promise.all([
+  getCollection('research', filter),
   getCollection('projects', filter)
 ]);
 
 const searchData = [
-  ...papers.map((entry) => ({ entry, collection: 'papers' as const })),
-  ...agents.map((entry) => ({ entry, collection: 'agents' as const })),
+  ...research.map((entry) => ({ entry, collection: 'research' as const })),
   ...projects.map((entry) => ({ entry, collection: 'projects' as const }))
 ].map(({ entry, collection }) => ({
   title: entry.data.title,
   description: entry.data.description,
   tags: entry.data.tags ?? [],
   body: entry.body.slice(0, 12000),
-  category: sectionMeta[collection].label,
+  category: collection === 'research'
+    ? getResearchDirection(entry.data.direction)?.label ?? sectionMeta[collection].label
+    : sectionMeta[collection].label,
   url: entryUrl(collection, entry.id),
   timestamp: entry.data.pubDate.valueOf(),
   date: entry.data.pubDate.toISOString().slice(0, 10)
@@ -28,7 +29,7 @@ const searchData = [
 const serialized = JSON.stringify(searchData).replace(/</g, '\\u003c');
 ---
 
-<BaseLayout title="站内搜索" description="搜索 EAI-Lab 的论文精读、Agent 实践与项目复现内容。">
+<BaseLayout title="站内搜索" description="搜索 EAI-Lab 的研究方向与项目复现内容。">
   <section class="search-page container">
     <div class="section-eyebrow">SEARCH</div>
     <h1>站内搜索</h1>
@@ -36,7 +37,7 @@ const serialized = JSON.stringify(searchData).replace(/</g, '\\u003c');
 
     <div class="search-box">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.7"></circle><path d="m16 16 4.2 4.2"></path></svg>
-      <input id="search-input" type="search" placeholder="搜索论文、算法、工具或项目…" autocomplete="off" autofocus />
+      <input id="search-input" type="search" placeholder="搜索方向、算法、论文或项目…" autocomplete="off" autofocus />
       <kbd>/</kbd>
     </div>
 

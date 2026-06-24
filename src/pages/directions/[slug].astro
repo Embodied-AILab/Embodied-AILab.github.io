@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { researchDirections, getResearchDirection } from '../../data/researchDirections';
+
+export function getStaticPaths() {
+  return researchDirections.map((direction) => ({
+    params: { slug: direction.slug },
+    props: { direction }
+  }));
+}
+
+const { direction } = Astro.props;
+const entries = (await getCollection('research', ({ data }) => {
+  const visible = import.meta.env.PROD ? data.draft !== true : true;
+  return visible && data.direction === direction.slug;
+})).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const current = getResearchDirection(direction.slug) ?? direction;
+---
+
+<BaseLayout title={current.label} description={current.description}>
+  <section class="listing-hero shell">
+    <div class="listing-index">研究方向</div>
+    <h1>{current.label}</h1>
+    <p>{current.description}</p>
+    <div class="listing-meta"><span>{String(entries.length).padStart(2, '0')} 篇内容</span><i></i><a href="/directions/">全部研究方向</a></div>
+  </section>
+
+  <section class="shell listing-section">
+    <div class="article-grid-list">
+      {entries.map((entry, index) => <ArticleCard entry={entry} collection="research" index={index} />)}
+    </div>
+    {entries.length === 0 && <div class="empty-state">这个方向的内容正在整理中。</div>}
+  </section>
+</BaseLayout>
