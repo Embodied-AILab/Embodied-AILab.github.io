@@ -26,85 +26,101 @@ const latestByDirection = Object.fromEntries(
   ])
 ) as Record<string, Array<{ href: string; title: string; description: string; label: string }>>;
 
+const directionCards = researchDirections.map((direction, index) => {
+  const latest = latestByDirection[direction.slug] ?? [];
+  return {
+    ...direction,
+    index: String(index + 1).padStart(2, '0'),
+    count: research.filter((entry) => entry.data.direction === direction.slug).length,
+    latest: latest[0]
+  };
+});
+
+const latestResearch = research
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 4)
+  .map((entry) => ({
+    href: entryUrl('research', entry.id),
+    title: entry.data.title,
+    description: entry.data.description,
+    label: formatDate(entry.data.pubDate)
+  }));
+
 const latestProjects = projects
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 2)
+  .slice(0, 3)
   .map((entry) => ({
     href: entryUrl('projects', entry.id),
     title: entry.data.title,
     description: entry.data.description,
     label: formatDate(entry.data.pubDate)
   }));
-
-const modules = [
-  ...researchDirections.map((direction) => ({
-    href: `/directions/${direction.slug}/`,
-    title: direction.label,
-    tone: 'research',
-    color: direction.color,
-    latest: latestByDirection[direction.slug],
-    summary: [direction.description, '内容正在整理中。']
-  })),
-  {
-    href: '/projects/',
-    title: '项目复现',
-    tone: 'project',
-    latest: latestProjects,
-    summary: ['记录开源项目阅读、环境搭建、实验过程和复现结论。']
-  },
-  {
-    title: '关于这个网站',
-    tone: 'about',
-    summary: [
-      '这是一个具身智能学习与实践记录站。',
-      '重点整理研究方向、核心论文和项目复现。',
-      '内容优先追求可验证、可复现、可回看。'
-    ]
-  }
-];
 ---
 
 <BaseLayout>
   <section class="home-lab shell">
-    <header class="home-intro">
-      <p>EAI-Lab</p>
-      <div>
+    <div class="home-topline">
+      <header class="home-intro">
+        <p>EAI-Lab</p>
         <h1>具身智能研究室</h1>
         <span>按研究方向记录具身智能论文、算法和项目复现过程。</span>
+      </header>
+      <a class="home-all-link" href="/directions/">全部方向 <span>↗</span></a>
+    </div>
+
+    <section class="home-category-board" aria-label="研究方向分类">
+      <div class="home-category-grid">
+        {directionCards.map((item) => (
+          <a class="home-category-card" style={`--module-color: ${item.color}`} href={`/directions/${item.slug}/`} aria-label={`进入${item.label}`}>
+            <div class="home-category-meta">
+              <span>{item.index}</span>
+              <i>{item.count > 0 ? `${item.count} 篇` : '整理中'}</i>
+            </div>
+            <h2>{item.label}</h2>
+            <p>{item.description}</p>
+            {item.latest && (
+              <strong>
+                <span>{item.latest.label}</span>
+                {item.latest.title}
+              </strong>
+            )}
+          </a>
+        ))}
       </div>
-    </header>
+    </section>
 
-    <section class="home-index" aria-label="首页入口">
-      {modules.map((item) => (
-        <article class:list={['home-module', item.tone]} style={item.color ? `--module-color: ${item.color}` : undefined}>
-          {item.href ? (
-            <a class="home-module-title" href={item.href} aria-label={`进入${item.title}`}>
-              <h2>{item.title}</h2>
-              <span aria-hidden="true">↗</span>
+    <section class="home-updates" aria-label="最近更新">
+      <article class="home-update-panel">
+        <div class="home-panel-head">
+          <h2>最新研究笔记</h2>
+          <a href="/directions/">研究方向 <span>↗</span></a>
+        </div>
+        <div class="home-update-list">
+          {latestResearch.map((entry) => (
+            <a class="home-update-item" href={entry.href} aria-label={`阅读：${entry.title}`}>
+              <span>{entry.label}</span>
+              <strong>{entry.title}</strong>
+              <p>{entry.description}</p>
             </a>
-          ) : (
-            <div class="home-module-title static">
-              <h2>{item.title}</h2>
-            </div>
-          )}
+          ))}
+        </div>
+      </article>
 
-          {item.latest ? (
-            <div class="home-latest-list">
-              {item.latest.length > 0 ? item.latest.map((entry) => (
-                <a class="home-latest-item" href={entry.href} aria-label={`阅读：${entry.title}`}>
-                  <span>{entry.label}</span>
-                  <strong>{entry.title}</strong>
-                  <p>{entry.description}</p>
-                </a>
-              )) : item.summary?.map((line) => <p class="home-empty-line">{line}</p>)}
-            </div>
-          ) : (
-            <div class="home-about-note">
-              {item.summary.map((line) => <p>{line}</p>)}
-            </div>
-          )}
-        </article>
-      ))}
+      <article class="home-update-panel">
+        <div class="home-panel-head">
+          <h2>项目复现</h2>
+          <a href="/projects/">全部项目 <span>↗</span></a>
+        </div>
+        <div class="home-update-list">
+          {latestProjects.map((entry) => (
+            <a class="home-update-item" href={entry.href} aria-label={`阅读：${entry.title}`}>
+              <span>{entry.label}</span>
+              <strong>{entry.title}</strong>
+              <p>{entry.description}</p>
+            </a>
+          ))}
+        </div>
+      </article>
     </section>
   </section>
 </BaseLayout>
