@@ -4,6 +4,7 @@
   font-weight: 400;
   font-display: swap;
   src: url("/fonts/eai-brush-display.woff2") format("woff2");
+  unicode-range: U+2014, U+2018-201F, U+2026, U+2E80-2EFF, U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FF00-FFEF;
 }
 
 :root {
@@ -41,9 +42,9 @@
   --fs-page: clamp(34px, 4vw, 50px);
   --fs-home: clamp(38px, 4.3vw, 52px);
   --fs-entry: clamp(26px, 2.5vw, 34px);
-  --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
-  --display: "Avenir Next", Avenir, "Helvetica Neue", Arial, "EAI Brush", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-  --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --sans: "EAI Brush", Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+  --display: "EAI Brush", "Avenir Next", Avenir, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --mono: "EAI Brush", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 html[data-theme='dark'] {
