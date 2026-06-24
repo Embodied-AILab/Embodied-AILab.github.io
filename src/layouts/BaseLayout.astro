@@ -56,16 +56,34 @@ const ambientParticles = Array.from({ length: 34 }, (_, index) => ({
         document.documentElement.dataset.theme = theme;
         document.documentElement.style.colorScheme = theme;
 
-        const ambientKey = 'embodied-ailab-ambient';
-        const ambientSaved = localStorage.getItem(ambientKey);
-        const ambient = ['none', 'snow', 'rain', 'sakura'].includes(ambientSaved) ? ambientSaved : 'none';
-        document.documentElement.dataset.ambient = ambient;
+        const effectsKey = 'embodied-ailab-ambient-effects';
+        const legacyKey = 'embodied-ailab-ambient';
+        const effectKeys = ['snow', 'rain', 'sakura'];
+        const savedEffects = localStorage.getItem(effectsKey);
+        const legacyEffect = localStorage.getItem(legacyKey);
+        const activeEffects = savedEffects
+          ? savedEffects.split(',').filter((item) => effectKeys.includes(item))
+          : (effectKeys.includes(legacyEffect) ? [legacyEffect] : []);
+        effectKeys.forEach((item) => {
+          const attr = `ambient${item[0].toUpperCase()}${item.slice(1)}`;
+          document.documentElement.dataset[attr] = activeEffects.includes(item) ? 'on' : 'off';
+        });
       })();
     </script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">跳到正文</a>
-    <div class="ambient-layer" aria-hidden="true">
+    <div class="ambient-layer ambient-layer-snow" aria-hidden="true">
+      {ambientParticles.map((item) => (
+        <span style={`--x:${item.x}%; --delay:-${item.delay}s; --duration:${item.duration}s; --scale:${item.scale}; --drift:${item.drift - 50}px;`}></span>
+      ))}
+    </div>
+    <div class="ambient-layer ambient-layer-rain" aria-hidden="true">
+      {ambientParticles.map((item) => (
+        <span style={`--x:${item.x}%; --delay:-${item.delay}s; --duration:${item.duration}s; --scale:${item.scale}; --drift:${item.drift - 50}px;`}></span>
+      ))}
+    </div>
+    <div class="ambient-layer ambient-layer-sakura" aria-hidden="true">
       {ambientParticles.map((item) => (
         <span style={`--x:${item.x}%; --delay:-${item.delay}s; --duration:${item.duration}s; --scale:${item.scale}; --drift:${item.drift - 50}px;`}></span>
       ))}

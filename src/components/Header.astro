@@ -34,18 +34,6 @@ const isActive = (href: string) => path === href || (path.startsWith(href) && hr
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m15.4 15.4 4.3 4.3"></path></svg>
       </a>
 
-      <details class="ambient-menu" id="ambient-menu">
-        <summary class="icon-button ambient-trigger" aria-label="选择背景效果" title="背景效果">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l1.5 4.2 4.2 1.5-4.2 1.5-1.5 4.2-1.5-4.2-4.2-1.5 4.2-1.5L12 3.5Z"></path><path d="M18.5 14.5l.7 2 .2.1 1.8.6-1.8.6-.2.1-.7 2-.7-2-.2-.1-1.8-.6 1.8-.6.2-.1.7-2Z"></path></svg>
-        </summary>
-        <div class="ambient-panel" role="group" aria-label="背景效果">
-          <button type="button" data-ambient-option="none">纸面</button>
-          <button type="button" data-ambient-option="snow">雪花</button>
-          <button type="button" data-ambient-option="rain">小雨</button>
-          <button type="button" data-ambient-option="sakura">樱花</button>
-        </div>
-      </details>
-
       <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换到深色模式" title="切换深浅色模式">
         <span class="theme-track" aria-hidden="true">
           <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.6"></circle><path d="M12 2.5v2.1M12 19.4v2.1M4.6 4.6l1.5 1.5M17.9 17.9l1.5 1.5M2.5 12h2.1M19.4 12h2.1M4.6 19.4l1.5-1.5M17.9 6.1l1.5-1.5"></path></svg>
@@ -65,17 +53,29 @@ const isActive = (href: string) => path === href || (path.startsWith(href) && hr
   </div>
 </header>
 
+<div class="ambient-dock" id="ambient-dock" role="group" aria-label="背景效果开关">
+  <button type="button" data-ambient-toggle="snow" aria-label="开启雪花背景" title="雪花">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5.6 6.2l12.8 11.6M18.4 6.2 5.6 17.8M7.4 3.8 12 8l4.6-4.2M7.4 20.2 12 16l4.6 4.2M3.6 9.6 8.9 11 7.4 5.8M20.4 14.4 15.1 13l1.5 5.2M20.4 9.6 15.1 11l1.5-5.2M3.6 14.4 8.9 13l-1.5 5.2"></path></svg>
+  </button>
+  <button type="button" data-ambient-toggle="rain" aria-label="开启小雨背景" title="小雨">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 4.5 5.8 9M13 3.8l-2.2 5.9M18.4 5.2l-1.7 4.6M8.7 13.1l-2.4 6.2M14.2 12.1l-2.6 7M19.3 13.7l-2.1 5.5"></path></svg>
+  </button>
+  <button type="button" data-ambient-toggle="sakura" aria-label="开启樱花背景" title="樱花">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.8c-2.4-3.2-2.1-6.6 0-8.3 2.1 1.7 2.4 5.1 0 8.3Z"></path><path d="M12.1 12c3.8-1.2 6.9.4 7.5 3.1-2.3 1.4-5.7.6-7.5-3.1Z"></path><path d="M11.9 12c-1.8 3.7-5.2 4.5-7.5 3.1.6-2.7 3.7-4.3 7.5-3.1Z"></path><path d="M12 12.2c1.4 3.8 0 6.9-2.6 7.8-1.7-2.1-1.1-5.6 2.6-7.8Z"></path><path d="M12 12.2c3.7 2.2 4.3 5.7 2.6 7.8-2.6-.9-4-4-2.6-7.8Z"></path><circle cx="12" cy="12" r="1.4"></circle></svg>
+  </button>
+</div>
+
 <script is:inline>
   (() => {
     const key = 'embodied-ailab-theme';
     const root = document.documentElement;
     const button = document.getElementById('theme-toggle');
     const meta = document.querySelector('meta[name="theme-color"]');
-    const ambientKey = 'embodied-ailab-ambient';
-    const ambientMenu = document.getElementById('ambient-menu');
-    const ambientButtons = document.querySelectorAll('[data-ambient-option]');
+    const ambientKey = 'embodied-ailab-ambient-effects';
+    const legacyAmbientKey = 'embodied-ailab-ambient';
+    const ambientButtons = document.querySelectorAll('[data-ambient-toggle]');
+    const ambientKeys = ['snow', 'rain', 'sakura'];
     const ambientNames = {
-      none: '纸面',
       snow: '雪花',
       rain: '小雨',
       sakura: '樱花'
@@ -89,24 +89,39 @@ const isActive = (href: string) => path === href || (path.startsWith(href) && hr
       if (meta) meta.setAttribute('content', theme === 'dark' ? '#0d0f12' : '#eef3ef');
     };
 
-    const applyAmbient = (ambient) => {
-      const next = ambientNames[ambient] ? ambient : 'none';
-      root.dataset.ambient = next;
-      localStorage.setItem(ambientKey, next);
-      ambientButtons.forEach((item) => {
-        const active = item.dataset.ambientOption === next;
-        item.classList.toggle('active', active);
-        item.setAttribute('aria-pressed', String(active));
+    const attrName = (name) => `ambient${name[0].toUpperCase()}${name.slice(1)}`;
+
+    const readAmbient = () => {
+      const saved = localStorage.getItem(ambientKey);
+      const legacy = localStorage.getItem(legacyAmbientKey);
+      if (saved) return saved.split(',').filter((item) => ambientKeys.includes(item));
+      return ambientKeys.includes(legacy) ? [legacy] : [];
+    };
+
+    const applyAmbient = (activeEffects) => {
+      const active = ambientKeys.filter((item) => activeEffects.includes(item));
+      ambientKeys.forEach((item) => {
+        root.dataset[attrName(item)] = active.includes(item) ? 'on' : 'off';
       });
-      ambientMenu?.querySelector('summary')?.setAttribute('aria-label', `背景效果：${ambientNames[next]}`);
+      localStorage.setItem(ambientKey, active.join(','));
+      ambientButtons.forEach((item) => {
+        const option = item.dataset.ambientToggle;
+        const enabled = active.includes(option);
+        item.classList.toggle('active', enabled);
+        item.setAttribute('aria-pressed', String(enabled));
+        item.setAttribute('aria-label', `${enabled ? '关闭' : '开启'}${ambientNames[option]}背景`);
+      });
     };
 
     button?.addEventListener('click', () => apply(root.dataset.theme === 'dark' ? 'light' : 'dark'));
-    applyAmbient(root.dataset.ambient || 'none');
+    applyAmbient(readAmbient());
     ambientButtons.forEach((item) => {
       item.addEventListener('click', () => {
-        applyAmbient(item.dataset.ambientOption);
-        ambientMenu?.removeAttribute('open');
+        const active = ambientKeys.filter((key) => root.dataset[attrName(key)] === 'on');
+        const option = item.dataset.ambientToggle;
+        applyAmbient(active.includes(option)
+          ? active.filter((value) => value !== option)
+          : [...active, option]);
       });
     });
   })();
