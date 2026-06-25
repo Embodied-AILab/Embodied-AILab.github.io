@@ -21,6 +21,28 @@ const latestResearch = research
     label: formatDate(entry.data.pubDate)
   }));
 
+const directionBySlug = new Map(researchDirections.map((direction) => [direction.slug, direction.label]));
+const latestEntries = [
+  ...research.map((entry) => ({
+    href: entryUrl('research', entry.id),
+    title: entry.data.title,
+    description: entry.data.description,
+    date: formatDate(entry.data.pubDate),
+    timestamp: entry.data.pubDate.valueOf(),
+    category: directionBySlug.get(entry.data.direction) ?? '研究笔记',
+    tone: 'research'
+  })),
+  ...projects.map((entry) => ({
+    href: entryUrl('projects', entry.id),
+    title: entry.data.title,
+    description: entry.data.description,
+    date: formatDate(entry.data.pubDate),
+    timestamp: entry.data.pubDate.valueOf(),
+    category: '项目复现',
+    tone: 'project'
+  }))
+].sort((a, b) => b.timestamp - a.timestamp);
+
 const homeStats = [
   { label: '研究方向', value: String(researchDirections.length).padStart(2, '0') },
   { label: '研究笔记', value: String(research.length).padStart(2, '0') },
@@ -145,8 +167,31 @@ const monthLabels = contributionWeeks.map((week) => {
       ))}
     </section>
 
-    <section class="home-star-section" aria-label="GitHub Star">
-      <RepoStarTrend compact />
+    <section class="home-insight-row" aria-label="站点动态">
+      <div class="home-star-section" aria-label="GitHub Star">
+        <RepoStarTrend compact />
+      </div>
+      <article class="home-latest-panel" aria-label="最新文章">
+        <div class="home-latest-head">
+          <div>
+            <span>Latest Notes</span>
+            <h2>最新文章</h2>
+          </div>
+          <a href="/directions/">全部内容 ↗</a>
+        </div>
+        <div class="home-latest-list">
+          {latestEntries.map((entry, index) => (
+            <a class:list={['home-latest-item', entry.tone]} href={entry.href}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <div>
+                <small>{entry.date} · {entry.category}</small>
+                <strong>{entry.title}</strong>
+                <p>{entry.description}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </article>
     </section>
   </section>
 </BaseLayout>
