@@ -11,47 +11,11 @@ const [research, projects] = await Promise.all([
   getCollection('projects', filter)
 ]);
 
-const latestByDirection = Object.fromEntries(
-  researchDirections.map((direction) => [
-    direction.slug,
-    research
-      .filter((entry) => entry.data.direction === direction.slug)
-      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-      .slice(0, 2)
-      .map((entry) => ({
-        href: entryUrl('research', entry.id),
-        title: entry.data.title,
-        description: entry.data.description,
-        label: formatDate(entry.data.pubDate)
-      }))
-  ])
-) as Record<string, Array<{ href: string; title: string; description: string; label: string }>>;
-
-const directionCards = researchDirections.map((direction, index) => {
-  const latest = latestByDirection[direction.slug] ?? [];
-  return {
-    ...direction,
-    index: String(index + 1).padStart(2, '0'),
-    count: research.filter((entry) => entry.data.direction === direction.slug).length,
-    latest: latest[0]
-  };
-});
-
 const latestResearch = research
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 4)
   .map((entry) => ({
     href: entryUrl('research', entry.id),
-    title: entry.data.title,
-    description: entry.data.description,
-    label: formatDate(entry.data.pubDate)
-  }));
-
-const latestProjects = projects
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3)
-  .map((entry) => ({
-    href: entryUrl('projects', entry.id),
     title: entry.data.title,
     description: entry.data.description,
     label: formatDate(entry.data.pubDate)
@@ -64,23 +28,36 @@ const homeStats = [
   { label: '最近更新', value: latestResearch[0]?.label ?? '整理中' }
 ];
 
-const heroVisuals = [
-  {
-    src: '/notes/deep-whole-body-parkour/cover.webp',
-    alt: '人形机器人全身跑酷动作合集',
-    label: 'Vision Parkour'
-  },
-  {
-    src: '/notes/hiking-in-the-wild/system-overview.webp',
-    alt: 'Hiking in the Wild 系统总览',
-    label: 'Perceptive AMP'
-  },
-  {
-    src: '/notes/open-motion-control/image_05.png',
-    alt: '世界模型训练流程',
-    label: 'World Model'
-  }
-];
+const allEntries = [...research, ...projects];
+const updateCounts = new Map<string, number>();
+allEntries.forEach((entry) => {
+  const date = entry.data.pubDate.toISOString().slice(0, 10);
+  updateCounts.set(date, (updateCounts.get(date) ?? 0) + 1);
+});
+
+const latestDate = allEntries
+  .map((entry) => entry.data.pubDate)
+  .sort((a, b) => b.valueOf() - a.valueOf())[0] ?? new Date();
+const endDate = new Date(latestDate);
+endDate.setHours(0, 0, 0, 0);
+endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
+const startDate = new Date(endDate);
+startDate.setDate(endDate.getDate() - 83);
+
+const contributionDays = Array.from({ length: 84 }, (_, index) => {
+  const date = new Date(startDate);
+  date.setDate(startDate.getDate() + index);
+  const key = date.toISOString().slice(0, 10);
+  const count = updateCounts.get(key) ?? 0;
+  const level = count === 0 ? 0 : Math.min(count, 4);
+  return {
+    date: formatDate(date),
+    count,
+    level
+  };
+});
+
+const activeDays = contributionDays.filter((day) => day.count > 0).length;
 ---
 
 <BaseLayout>
@@ -96,19 +73,30 @@ const heroVisuals = [
         </div>
       </div>
 
-      <div class="home-hero-side" aria-label="最近研究动态">
+      <div class="home-hero-side" aria-label="最近更新记录">
         <div class="home-side-head">
-          <span>Latest Notes</span>
-          <a href="/directions/">全部方向 ↗</a>
+          <span>更新记录</span>
+          <a href="/directions/">全部内容 ↗</a>
         </div>
-        <div class="home-side-list">
-          {latestResearch.slice(0, 3).map((entry, index) => (
-            <a href={entry.href}>
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <strong>{entry.title}</strong>
-              <small>{entry.label}</small>
-            </a>
-          ))}
+        <div class="home-contrib-card">
+          <div class="home-contrib-summary">
+            <strong>{allEntries.length}</strong>
+            <span>最近内容记录</span>
+          </div>
+          <div class="home-contrib-grid" aria-label="最近 12 周内容更新热力图">
+            {contributionDays.map((day) => (
+              <span data-level={day.level} title={`${day.date}：${day.count} 条更新`} aria-label={`${day.date}：${day.count} 条更新`}></span>
+            ))}
+          </div>
+          <div class="home-contrib-foot">
+            <span>{activeDays} 天有更新</span>
+            <i>少</i>
+            <b data-level="1"></b>
+            <b data-level="2"></b>
+            <b data-level="3"></b>
+            <b data-level="4"></b>
+            <i>多</i>
+          </div>
         </div>
       </div>
     </section>
@@ -122,77 +110,7 @@ const heroVisuals = [
       ))}
     </section>
 
-    <section class="home-visual-strip" aria-label="研究图像索引">
-      {heroVisuals.map((item) => (
-        <figure>
-          <img src={item.src} alt={item.alt} loading="lazy" />
-          <figcaption>{item.label}</figcaption>
-        </figure>
-      ))}
-    </section>
-
-    <section class="home-section-heading">
-      <div>
-        <span>Research Map</span>
-        <h2>全部研究方向</h2>
-      </div>
-      <p>一眼看到当前分类和每个方向的最新笔记，后续新增文章会自动回流到对应方向。</p>
-    </section>
-
-    <section class="home-category-board" aria-label="研究方向分类">
-      <div class="home-category-grid">
-        {directionCards.map((item) => (
-          <a class="home-category-card" style={`--module-color: ${item.color}`} href={`/directions/${item.slug}/`} aria-label={`进入${item.label}`}>
-            <div class="home-category-meta">
-              <span>{item.index}</span>
-              <i>{item.count > 0 ? `${item.count} 篇` : '整理中'}</i>
-            </div>
-            <h2>{item.label}</h2>
-            <p>{item.description}</p>
-            {item.latest && (
-              <strong>
-                <span>{item.latest.label}</span>
-                {item.latest.title}
-              </strong>
-            )}
-          </a>
-        ))}
-      </div>
-    </section>
-
-    <section class="home-updates" aria-label="最近更新">
-      <article class="home-update-panel">
-        <div class="home-panel-head">
-          <h2>最新研究笔记</h2>
-          <a href="/directions/">研究方向 <span>↗</span></a>
-        </div>
-        <div class="home-update-list">
-          {latestResearch.map((entry) => (
-            <a class="home-update-item" href={entry.href} aria-label={`阅读：${entry.title}`}>
-              <span>{entry.label}</span>
-              <strong>{entry.title}</strong>
-              <p>{entry.description}</p>
-            </a>
-          ))}
-        </div>
-      </article>
-
-      <article class="home-update-panel">
-        <div class="home-panel-head">
-          <h2>项目复现</h2>
-          <a href="/projects/">全部项目 <span>↗</span></a>
-        </div>
-        <div class="home-update-list">
-          {latestProjects.map((entry) => (
-            <a class="home-update-item" href={entry.href} aria-label={`阅读：${entry.title}`}>
-              <span>{entry.label}</span>
-              <strong>{entry.title}</strong>
-              <p>{entry.description}</p>
-            </a>
-          ))}
-        </div>
-      </article>
-
+    <section class="home-star-section" aria-label="GitHub Star">
       <RepoStarTrend compact />
     </section>
   </section>

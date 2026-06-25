@@ -399,6 +399,85 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
   letter-spacing: .06em;
 }
 .home-side-head a:hover { color: var(--accent); }
+.home-contrib-card {
+  display: grid;
+  gap: 18px;
+  margin-top: auto;
+}
+.home-contrib-summary {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  padding-top: 18px;
+}
+.home-contrib-summary strong {
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: clamp(44px, 5vw, 64px);
+  font-weight: 400;
+  line-height: .9;
+}
+.home-contrib-summary span {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  letter-spacing: .07em;
+}
+.home-contrib-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, 1fr);
+  gap: 6px;
+  align-items: center;
+  justify-content: start;
+  overflow-x: auto;
+  padding: 2px 2px 8px;
+}
+.home-contrib-grid span,
+.home-contrib-foot b {
+  width: 17px;
+  height: 17px;
+  display: block;
+  border: 1px solid color-mix(in srgb, var(--line-strong), transparent 16%);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--surface-2), transparent 16%);
+}
+.home-contrib-grid span[data-level='1'],
+.home-contrib-foot b[data-level='1'] {
+  border-color: color-mix(in srgb, var(--project), transparent 45%);
+  background: color-mix(in srgb, var(--project), transparent 74%);
+}
+.home-contrib-grid span[data-level='2'],
+.home-contrib-foot b[data-level='2'] {
+  border-color: color-mix(in srgb, var(--project), transparent 34%);
+  background: color-mix(in srgb, var(--project), transparent 58%);
+}
+.home-contrib-grid span[data-level='3'],
+.home-contrib-foot b[data-level='3'] {
+  border-color: color-mix(in srgb, var(--accent), transparent 26%);
+  background: color-mix(in srgb, var(--accent), transparent 48%);
+}
+.home-contrib-grid span[data-level='4'],
+.home-contrib-foot b[data-level='4'] {
+  border-color: color-mix(in srgb, var(--accent), transparent 12%);
+  background: var(--accent);
+}
+.home-contrib-foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .04em;
+}
+.home-contrib-foot span {
+  margin-right: auto;
+}
+.home-contrib-foot i {
+  font-style: normal;
+}
 .home-side-list {
   display: grid;
   gap: 0;
@@ -647,6 +726,11 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, .78fr) minmax(280px, .72fr);
   gap: 18px;
+}
+.home-star-section {
+  max-width: 660px;
+  justify-self: center;
+  width: 100%;
 }
 .home-update-panel {
   min-height: 100%;
