@@ -44,9 +44,11 @@
   --fs-page: clamp(34px, 4vw, 50px);
   --fs-home: clamp(38px, 4.3vw, 52px);
   --fs-entry: clamp(26px, 2.5vw, 34px);
-  --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
-  --display: "EAI Brush", "Avenir Next", Avenir, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-  --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --latin: "Times New Roman", Times;
+  --sans: var(--latin), "EAI Brush", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", serif;
+  --display: "EAI Brush", var(--latin), "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", serif;
+  --mono: var(--latin), "EAI Brush", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", serif;
+  --code: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 html[data-theme='dark'] {
@@ -1134,7 +1136,7 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
 .prose li { margin: .5em 0; padding-left: .2em; }
 .prose blockquote { margin: 1.9em 0; padding: 24px 26px; border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 0 14px 14px 0; background: color-mix(in srgb, var(--accent-soft), transparent 32%); color: var(--ink-soft); }
 .prose blockquote p { margin: 0; }
-.prose code { padding: 2px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-2); font-family: var(--mono); font-size: .9em; }
+.prose code { padding: 2px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-2); font-family: var(--code); font-size: .9em; }
 .prose pre {
   overflow-x: auto;
   margin: 1.7em 0;
