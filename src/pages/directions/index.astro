@@ -31,20 +31,32 @@ const cards = researchDirections.map((direction, index) => {
     <div class="listing-index">01</div>
     <h1>文章索引</h1>
     <p>按研究方向直接列出所有论文笔记，从首页进来后第二次点击就能进入目标文章。</p>
-    <div class="listing-meta"><span>{String(entries.length).padStart(2, '0')} 篇内容</span><i></i><span>数据重定向 · 运动跟踪 · Loco-Manip · 仿真器</span></div>
+    <div class="listing-meta"><span>{String(entries.length).padStart(2, '0')} 篇内容</span><i></i><span>数据重定向 · 运动跟踪 · AMP · 世界模型 · Loco-Manip · 数据生成 · 仿真器</span></div>
   </section>
+
+  <nav class="shell direction-quick-nav" aria-label="方向快速索引">
+    {cards.map((card) => (
+      <a href={`#${card.slug}`} style={`--module-color: ${card.color}`}>
+        <span>{card.index}</span>
+        <strong>{card.label}</strong>
+        <em>{card.count}</em>
+      </a>
+    ))}
+  </nav>
 
   <section class="shell listing-section">
     <div class="direction-grid">
       {cards.map((card) => (
-        <article class="direction-card" style={`--module-color: ${card.color}`}>
-          <a class="direction-card-head" href={`/directions/${card.slug}/`} aria-label={`查看${card.label}`}>
-            <span>{card.index}</span>
-            <h2>{card.label}</h2>
-            <i aria-hidden="true">↗</i>
-          </a>
-          <p>{card.description}</p>
-          <div class="direction-card-meta">{card.count > 0 ? `${card.count} 篇内容` : '内容整理中'}</div>
+        <article id={card.slug} class="direction-card" style={`--module-color: ${card.color}`}>
+          <div class="direction-card-intro">
+            <a class="direction-card-head" href={`/directions/${card.slug}/`} aria-label={`查看${card.label}`}>
+              <span>{card.index}</span>
+              <h2>{card.label}</h2>
+              <i aria-hidden="true">↗</i>
+            </a>
+            <p>{card.description}</p>
+            <div class="direction-card-meta">{card.count > 0 ? `${card.count} 篇内容` : '内容整理中'}</div>
+          </div>
           {card.articles.length > 0 && (
             <div class="direction-latest">
               {card.articles.map((entry) => (
