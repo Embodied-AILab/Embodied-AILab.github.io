@@ -1,0 +1,83 @@
+---
+title: "Deep Whole-body Parkour：视觉闭环的全身跑酷控制"
+description: "只记录这篇工作的算法实现流程：数据对齐、视觉强化学习训练、相对坐标系、深度图 sim-to-real 与实机部署。"
+pubDate: 2026-06-25
+tags: ["Whole-body Control", "Parkour", "Depth Vision", "Reinforcement Learning"]
+direction: "motion-tracking"
+featured: true
+paperTitle: "Deep Whole-body Parkour"
+paperUrl: "https://arxiv.org/abs/2601.07701"
+projectUrl: "https://project-instinct.github.io/deep-whole-body-parkour/"
+codeUrl: "https://github.com/project-instinct/InstinctLab/blob/main/source/instinctlab/instinctlab/tasks/shadowing/README.md"
+venue: "arXiv"
+year: 2026
+readingMinutes: 6
+---
+
+## 论文信息
+
+- **论文名称：** Deep Whole-body Parkour
+- **发表机构：** IIIS, Tsinghua University；Shanghai Qi Zhi Institute
+- **项目主页：** [project-instinct.github.io/deep-whole-body-parkour](https://project-instinct.github.io/deep-whole-body-parkour/)
+
+![Deep Whole-body Parkour 整体流程](/notes/deep-whole-body-parkour/pipeline.webp)
+
+*图源：论文 Figure 1，展示从真实环境扫描、人类演示到视觉强化学习策略的整体流程。*
+
+## 算法实现流程
+
+这篇工作的核心不是单纯让人形机器人“背诵”跑酷动作，而是把外感知、参考动作追踪和全身控制放进同一个强化学习闭环里。Policy 在执行时同时看深度图、本体历史和未来参考轨迹，因此可以根据障碍物几何主动修正步幅和落点。
+
+## 1. 数据对齐与环境生成
+
+第一步先构造带环境约束的动作数据。作者让人类专家在真实障碍物上完成翻越、攀爬、翻滚等跑酷动作，同时用 LiDAR 扫描真实场景，得到与动作严格对齐的 3D Mesh。
+
+这些“动作-地形”配对会被转入仿真环境，并在 Isaac Lab 中程序化生成。每个训练场景不再只是平地上的动作轨迹，而是包含对应障碍物几何的 motion-terrain pair。这样训练出来的策略才有机会学习动作与环境之间的空间关系。
+
+为了降低大规模并行训练的视觉开销，论文还使用了预计算的 grouped ray-casting：静态地形作为全局可见组，每个 Agent 的动态物体单独分组。光线投射只需要查询当前 Agent 相关的动态组和静态地形，避免遍历所有 Mesh，渲染速度相比朴素实现提升约 10 倍。
+
+## 2. 强化学习训练
+
+训练阶段采用 Actor-Critic 框架。
+
+Actor 输入包含三类信息：
+
+- 带噪声的深度图像。
+- 机器人本体感知历史。
+- 未来参考轨迹。
+
+Critic 则使用更完整的特权信息，包括地形高度图、机器人全局位置和线速度。这个设置让策略在部署时只依赖可获得观测，但训练时仍能利用更强的监督信号稳定收敛。
+
+为了解决长动作序列里“某几个阶段反复失败”的问题，论文采用基于失败统计的课程学习。具体做法是把参考动作按时间离散成多个 bin，训练时记录每个时间片的失败频次；重置环境时，更高概率采样失败率高的片段。这样 Agent 会把训练预算集中用在薄弱阶段，而不是平均浪费在已经学会的动作片段上。
+
+## 3. 相对坐标系设计
+
+![Relative Frame 示意图](/notes/deep-whole-body-parkour/relative-frame.webp)
+
+*图源：论文 Figure 2，展示 Relative Frame 如何混合机器人实际 base 与参考动作坐标。*
+
+为了同时兼顾参考动作追踪和环境偏差适应，论文没有直接在世界坐标系下定义全部奖励，而是引入 Relative Frame。
+
+这个坐标系的 XY 平面和 yaw 跟随机器人实际 base，Z、roll 和 pitch 则跟随参考动作。这样做的意义是把“机器人离参考起点有一点偏差”与“机器人身体姿态是否正确”解耦。策略不必死抠绝对位置，而是更关注相对姿态、接触关系和地形适应。
+
+## 4. 深度视觉的 Sim-to-Real
+
+![深度图 sim-to-real 处理](/notes/deep-whole-body-parkour/sim-to-real-depth.webp)
+
+*图源：论文 Figure 3，展示仿真深度图噪声与实机深度图修补的对应关系。*
+
+部署阶段的关键问题是深度相机的真实观测并不干净：会有空洞、反光、运动模糊和伪影。论文在仿真中主动注入高斯噪声、局部伪影和模糊模式，让训练阶段的深度图分布更接近 RealSense 的真实输出。
+
+实机部署时，系统使用 GPU 加速的 OpenCV Inpainting 实时修补深度图空洞，使深度观测能以约 50Hz 的频率进入策略。整个实机流程不依赖外部定位系统，主要依靠深度视觉、本体感知和 IMU 对参考动作航向角的修正完成闭环控制。
+
+## 5. 部署链路
+
+最终部署可以理解为一条端到端视觉运动追踪链路：
+
+1. 深度相机获取局部障碍物几何。
+2. Inpainting 和噪声鲁棒训练共同减小深度 sim-to-real gap。
+3. Actor 根据深度图、本体历史和未来参考轨迹输出全身控制动作。
+4. Relative Frame 让策略在起始位置有偏差时仍能重新对齐目标障碍物。
+5. IMU 负责修正参考动作航向，其余部分由视觉和本体感知闭环完成。
+
+这套流程把传统 perceptive locomotion 的环境感知能力，和 motion tracking 的全身动作表达能力合在了一起。对工程实现来说，最值得借鉴的是三点：动作数据必须带环境约束，视觉仿真要主动贴近真实传感器缺陷，奖励与坐标系设计要避免把绝对位置误差和动作质量绑死。
