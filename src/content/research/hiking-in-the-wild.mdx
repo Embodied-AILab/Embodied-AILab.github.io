@@ -1,0 +1,99 @@
+---
+title: "Hiking in the Wild：端到端感知跑酷框架"
+description: "记录这篇工作里的算法实现流程：PPO+AMP、深度图双向对齐、边缘安全惩罚、Flat Patch 指令生成与异步部署。"
+pubDate: 2026-06-25
+tags: ["Perceptive Locomotion", "Parkour", "AMP", "Depth Vision"]
+direction: "motion-tracking"
+featured: true
+paperTitle: "Hiking in the Wild: A Scalable Perceptive Parkour Framework for Humanoids"
+paperUrl: "https://arxiv.org/abs/2601.07718"
+projectUrl: "https://project-instinct.github.io/hiking-in-the-wild"
+codeUrl: "https://github.com/project-instinct/InstinctLab/blob/main/source/instinctlab/instinctlab/tasks/parkour/README.md"
+venue: "arXiv"
+year: 2026
+readingMinutes: 7
+---
+
+## 论文信息
+
+- **论文名称：** Hiking in the Wild: A Scalable Perceptive Parkour Framework for Humanoids
+- **发表机构：** IIIS, Tsinghua University；Shanghai Qi Zhi Institute；Department of Computer Science and Technology, Tsinghua University
+- **项目主页：** [project-instinct.github.io/hiking-in-the-wild](https://project-instinct.github.io/hiking-in-the-wild)
+
+<figure>
+  <img src="/notes/hiking-in-the-wild/system-overview.webp" alt="Hiking in the Wild 系统总览" />
+  <figcaption>图源：论文 Figure 1，展示从仿真深度图、本体感知到端到端策略部署的整体框架。</figcaption>
+</figure>
+
+## 算法实现流程
+
+这篇工作把野外徒步任务建模成端到端感知控制问题：不显式建图，不依赖外部定位系统，而是把深度图历史和本体感知直接映射到人形机器人关节动作。框架的关键在于同时解决三个问题：高频视觉输入、落足安全，以及可学习的速度指令。
+
+## 1. PPO + AMP 训练框架
+
+训练采用非对称 Actor-Critic。Actor 只接收部署时可获得的信息，包括稀疏采样的深度图历史和本体感知状态；Critic 则额外使用无噪声完整状态、线速度等特权信息做价值评估。
+
+奖励由任务项、正则项、安全项和 AMP 风格奖励组成。AMP 判别器使用 MPC 生成的稳定行走数据和人类动捕奔跑数据共同训练，用来约束策略输出更自然、更稳定的步态。这样做的目标不是只追求速度，而是让高动态动作仍然保持接近真实运动分布。
+
+## 2. 深度图双向对齐
+
+<figure>
+  <img src="/notes/hiking-in-the-wild/depth-processing.webp" alt="深度图双向对齐" />
+  <figcaption>图源：论文 Figure 2，展示仿真深度图和真实深度图的双向处理方式。</figcaption>
+</figure>
+
+Sim 端主动加入噪声、伪影和深度缺失，模拟 RealSense 在反光、运动模糊和立体匹配失败时的观测缺陷。Real 端则使用 Inpainting 修复深度图空洞。两边不是只让仿真去贴近真实，也不是只清洗真实数据，而是通过双向逼近把虚实分布拉到同一个可学习区间。
+
+Policy 输入的不是单帧深度图，而是带时间间隔的稀疏历史序列。这个跨步采样扩大了时间感受野，让策略在高速运动时可以看到地形变化趋势，同时避免把视觉网络做得过重。
+
+## 3. 边缘安全机制
+
+<figure>
+  <img src="/notes/hiking-in-the-wild/terrain-edge-detection.webp" alt="地形边缘检测" />
+  <figcaption>图源：论文 Figure 3，展示不同地形上的自动边缘检测结果。</figcaption>
+</figure>
+
+在人形机器人上，脚掌如果踩在楼梯边缘或沟壑边缘，很容易打滑或翻倒。论文没有显式规划每一步落足点，而是在训练奖励里加入 scalable edge penalization。
+
+系统先根据地形 mesh 的相邻面夹角检测 sharp terrain edge，再把边缘作为安全风险区域。这样一来，策略在强化学习试错中会逐渐避开边缘附近的危险落足，而不是等部署时靠规则修正。
+
+## 4. Foot Volume Points 惩罚
+
+<figure>
+  <img src="/notes/hiking-in-the-wild/foot-volume-points.webp" alt="脚部体积点" />
+  <figcaption>图源：论文 Figure 4，展示分布在脚掌体积内的虚拟检测点。</figcaption>
+</figure>
+
+为了让安全惩罚真正对应脚掌接触，论文在脚部内部布置了一组 volume points。训练时检测这些点与地形边缘的穿透或接近情况，并对高风险接触施加惩罚。
+
+这个机制的效果是让策略隐式学会“脚心尽量落在安全平面内部”。它不要求单独做 foothold planner，但能明显减少脚掌踩边导致的 OOD 接触状态。
+
+## 5. Flat Patch 目标生成
+
+<figure>
+  <img src="/notes/hiking-in-the-wild/flat-patch-sampling.webp" alt="Flat Patch 目标采样" />
+  <figcaption>图源：论文 Figure 5，展示不同地形上筛选出的可达平坦区域。</figcaption>
+</figure>
+
+传统随机速度指令容易引发 reward hacking：机器人可能学会原地转圈或用不符合任务意图的方式刷分。Hiking in the Wild 改成先在地形 mesh 上采样物理可达的 flat patch，再根据机器人与目标 patch 的相对位置生成速度指令。
+
+这相当于给 RL 训练提供一组“可解的局部目标”。Agent 面对的不是任意方向任意速度，而是能落脚、能抵达、能提供有效探索信号的地形目标，因此训练更稳定，也更容易学到真实可部署的越障行为。
+
+## 6. 异步端侧部署
+
+最终部署采用视觉处理和策略推理解耦的异步架构。深度图处理约 60Hz，策略推理约 50Hz，端侧推理使用 OnnxRuntime 跑在 Jetson Orin NX 上。
+
+整个链路可以概括为：
+
+1. RealSense D435i 获取局部深度图。
+2. GPU Inpainting 修补深度缺失。
+3. 稀疏历史深度序列和本体感知输入 Actor。
+4. Actor 直接输出关节动作。
+5. 边缘安全和 flat patch 机制在训练中塑造出可部署的落足行为。
+
+<figure>
+  <img src="/notes/hiking-in-the-wild/real-world-deployment.webp" alt="Unitree G1 实机野外徒步结果" />
+  <figcaption>图源：论文 Figure 6，展示 Unitree G1 在平台、草坡、楼梯和沟壑等场景上的零样本部署。</figcaption>
+</figure>
+
+这套流程的工程重点很清楚：感知不先建图，落足不显式规划，指令不完全随机。它把视觉鲁棒性、安全奖励和目标采样都前置到训练环境里，让部署阶段保持一条轻量的端到端控制链路。

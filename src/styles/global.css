@@ -3,7 +3,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url("/fonts/eai-brush-display-v3.woff2") format("woff2");
+  src: url("/fonts/eai-brush-display-v4.woff2") format("woff2");
   unicode-range: U+2014, U+2018-201F, U+2026, U+2E80-2EFF, U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FF00-FFEF;
 }
 
@@ -705,7 +705,30 @@ html[data-theme='dark'] .prose :not(pre) > code {
   background: #192232;
   color: #edf3fb;
 }
-.prose img { display: block; margin: 2.2em auto; border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-sm); }
+.prose img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin: 2.2em auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+}
+.prose figure {
+  margin: 2.2em 0;
+}
+.prose figure img {
+  margin: 0 auto;
+}
+.prose figcaption,
+.prose p > em:only-child {
+  display: block;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+}
 .prose hr { margin: 3em 0; border: 0; border-top: 1px solid var(--line); }
 .prose table { width: 100%; border-collapse: collapse; margin: 1.9em 0; font-size: var(--fs-md); }
 .prose th, .prose td { padding: 12px 13px; border: 1px solid var(--line); text-align: left; }
