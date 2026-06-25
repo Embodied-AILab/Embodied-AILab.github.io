@@ -56,18 +56,88 @@ const latestProjects = projects
     description: entry.data.description,
     label: formatDate(entry.data.pubDate)
   }));
+
+const homeStats = [
+  { label: '研究方向', value: String(researchDirections.length).padStart(2, '0') },
+  { label: '研究笔记', value: String(research.length).padStart(2, '0') },
+  { label: '项目复现', value: String(projects.length).padStart(2, '0') },
+  { label: '最近更新', value: latestResearch[0]?.label ?? '整理中' }
+];
+
+const heroVisuals = [
+  {
+    src: '/notes/deep-whole-body-parkour/cover.webp',
+    alt: '人形机器人全身跑酷动作合集',
+    label: 'Vision Parkour'
+  },
+  {
+    src: '/notes/hiking-in-the-wild/system-overview.webp',
+    alt: 'Hiking in the Wild 系统总览',
+    label: 'Perceptive AMP'
+  },
+  {
+    src: '/notes/open-motion-control/image_05.png',
+    alt: '世界模型训练流程',
+    label: 'World Model'
+  }
+];
 ---
 
 <BaseLayout>
   <section class="home-lab shell">
-    <div class="home-topline">
-      <header class="home-intro">
-        <p>EAI-Lab</p>
+    <section class="home-hero" aria-label="EAI-Lab 主页">
+      <div class="home-hero-copy">
+        <p class="home-eyebrow">EAI-Lab · Embodied AI Notes</p>
         <h1>具身智能研究室</h1>
-        <span>按研究方向记录具身智能论文、算法和项目复现过程。</span>
-      </header>
-      <a class="home-all-link" href="/directions/">全部方向 <span>↗</span></a>
-    </div>
+        <p class="home-deck">按技术问题整理机器人运动控制、视觉强化学习、AMP、世界模型与项目复现，把论文里的算法流程拆成能复用的工程笔记。</p>
+        <div class="home-hero-actions">
+          <a class="button primary" href="/directions/">进入研究方向 <span>↗</span></a>
+          <a class="button ghost" href="/search/">站内搜索 <span>↗</span></a>
+        </div>
+      </div>
+
+      <div class="home-hero-side" aria-label="最近研究动态">
+        <div class="home-side-head">
+          <span>Latest Notes</span>
+          <a href="/directions/">全部方向 ↗</a>
+        </div>
+        <div class="home-side-list">
+          {latestResearch.slice(0, 3).map((entry, index) => (
+            <a href={entry.href}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <strong>{entry.title}</strong>
+              <small>{entry.label}</small>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="home-stats" aria-label="站点统计">
+      {homeStats.map((item) => (
+        <div>
+          <strong>{item.value}</strong>
+          <span>{item.label}</span>
+        </div>
+      ))}
+    </section>
+
+    <section class="home-visual-strip" aria-label="研究图像索引">
+      {heroVisuals.map((item) => (
+        <figure>
+          <img src={item.src} alt={item.alt} loading="lazy" />
+          <figcaption>{item.label}</figcaption>
+        </figure>
+      ))}
+    </section>
+
+    <section class="home-section-heading">
+      <div>
+        <span>Research Map</span>
+        <h2>全部研究方向</h2>
+      </div>
+      <p>一眼看到当前分类和每个方向的最新笔记，后续新增文章会自动回流到对应方向。</p>
+    </section>
 
     <section class="home-category-board" aria-label="研究方向分类">
       <div class="home-category-grid">
@@ -88,15 +158,6 @@ const latestProjects = projects
           </a>
         ))}
       </div>
-    </section>
-
-    <section class="home-pulse" aria-label="站点数据">
-      <RepoStarTrend />
-      <article class="home-pulse-note">
-        <span>内容同步</span>
-        <strong>飞书运动控制笔记已拆分进研究方向</strong>
-        <p>后续继续补充论文和项目时，首页会自动按方向展示最新内容。</p>
-      </article>
     </section>
 
     <section class="home-updates" aria-label="最近更新">
@@ -131,6 +192,8 @@ const latestProjects = projects
           ))}
         </div>
       </article>
+
+      <RepoStarTrend compact />
     </section>
   </section>
 </BaseLayout>
