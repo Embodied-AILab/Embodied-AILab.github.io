@@ -42,15 +42,16 @@ const endDate = new Date(latestDate);
 endDate.setHours(0, 0, 0, 0);
 endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
 const startDate = new Date(endDate);
-startDate.setDate(endDate.getDate() - 83);
+startDate.setDate(endDate.getDate() - 181);
 
-const contributionDays = Array.from({ length: 84 }, (_, index) => {
+const contributionDays = Array.from({ length: 182 }, (_, index) => {
   const date = new Date(startDate);
   date.setDate(startDate.getDate() + index);
   const key = date.toISOString().slice(0, 10);
   const count = updateCounts.get(key) ?? 0;
   const level = count === 0 ? 0 : Math.min(count, 4);
   return {
+    key,
     date: formatDate(date),
     count,
     level
@@ -58,6 +59,17 @@ const contributionDays = Array.from({ length: 84 }, (_, index) => {
 });
 
 const activeDays = contributionDays.filter((day) => day.count > 0).length;
+const totalUpdates = contributionDays.reduce((sum, day) => sum + day.count, 0);
+const contributionWeeks = Array.from({ length: 26 }, (_, weekIndex) =>
+  contributionDays.slice(weekIndex * 7, weekIndex * 7 + 7)
+);
+const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const monthLabels = contributionWeeks.map((week) => {
+  const monthStart = week.find((day) => Number(day.key.split('-')[2]) === 1);
+  if (!monthStart) return '';
+  const month = Number(monthStart.key.split('-')[1]);
+  return monthNames[month - 1];
+});
 ---
 
 <BaseLayout>
@@ -80,22 +92,45 @@ const activeDays = contributionDays.filter((day) => day.count > 0).length;
         </div>
         <div class="home-contrib-card">
           <div class="home-contrib-summary">
-            <strong>{allEntries.length}</strong>
-            <span>最近内容记录</span>
+            <strong>{totalUpdates} content updates in the last 6 months</strong>
           </div>
-          <div class="home-contrib-grid" aria-label="最近 12 周内容更新热力图">
-            {contributionDays.map((day) => (
-              <span data-level={day.level} title={`${day.date}：${day.count} 条更新`} aria-label={`${day.date}：${day.count} 条更新`}></span>
-            ))}
+          <div class="home-contrib-calendar">
+            <div class="home-contrib-months" aria-hidden="true">
+              <span></span>
+              {monthLabels.map((label) => <span>{label}</span>)}
+            </div>
+            <div class="home-contrib-body">
+              <div class="home-contrib-weekdays" aria-hidden="true">
+                <span></span>
+                <span>Mon</span>
+                <span></span>
+                <span>Wed</span>
+                <span></span>
+                <span>Fri</span>
+                <span></span>
+              </div>
+              <div class="home-contrib-grid" aria-label="最近 6 个月内容更新热力图">
+                {contributionWeeks.map((week) => (
+                  <div class="home-contrib-week">
+                    {week.map((day) => (
+                      <span data-level={day.level} title={`${day.date}：${day.count} 条更新`} aria-label={`${day.date}：${day.count} 条更新`}></span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
           <div class="home-contrib-foot">
-            <span>{activeDays} 天有更新</span>
-            <i>少</i>
-            <b data-level="1"></b>
-            <b data-level="2"></b>
-            <b data-level="3"></b>
-            <b data-level="4"></b>
-            <i>多</i>
+            <span>{activeDays} active days · Updates are counted by published notes and project logs.</span>
+            <div class="home-contrib-legend" aria-label="更新频率图例">
+              <i>Less</i>
+              <b data-level="0"></b>
+              <b data-level="1"></b>
+              <b data-level="2"></b>
+              <b data-level="3"></b>
+              <b data-level="4"></b>
+              <i>More</i>
+            </div>
           </div>
         </div>
       </div>
