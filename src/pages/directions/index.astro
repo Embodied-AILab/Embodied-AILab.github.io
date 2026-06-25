@@ -8,9 +8,8 @@ const entries = (await getCollection('research', ({ data }) => import.meta.env.P
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const cards = researchDirections.map((direction, index) => {
-  const latest = entries
+  const articles = entries
     .filter((entry) => entry.data.direction === direction.slug)
-    .slice(0, 2)
     .map((entry) => ({
       href: entryUrl('research', entry.id),
       title: entry.data.title,
@@ -22,16 +21,16 @@ const cards = researchDirections.map((direction, index) => {
     ...direction,
     index: String(index + 1).padStart(2, '0'),
     count: entries.filter((entry) => entry.data.direction === direction.slug).length,
-    latest
+    articles
   };
 });
 ---
 
-<BaseLayout title="研究方向" description="按具身智能技术方向整理论文、算法和项目笔记。">
+<BaseLayout title="文章索引" description="按具身智能技术方向整理论文、算法和项目笔记。">
   <section class="listing-hero shell">
     <div class="listing-index">01</div>
-    <h1>研究方向</h1>
-    <p>把具身智能内容按技术问题重新组织，方便长期积累、检索和复盘。</p>
+    <h1>文章索引</h1>
+    <p>按研究方向直接列出所有论文笔记，从首页进来后第二次点击就能进入目标文章。</p>
     <div class="listing-meta"><span>{String(entries.length).padStart(2, '0')} 篇内容</span><i></i><span>数据重定向 · 运动跟踪 · Loco-Manip · 仿真器</span></div>
   </section>
 
@@ -46,9 +45,9 @@ const cards = researchDirections.map((direction, index) => {
           </a>
           <p>{card.description}</p>
           <div class="direction-card-meta">{card.count > 0 ? `${card.count} 篇内容` : '内容整理中'}</div>
-          {card.latest.length > 0 && (
+          {card.articles.length > 0 && (
             <div class="direction-latest">
-              {card.latest.map((entry) => (
+              {card.articles.map((entry) => (
                 <a href={entry.href}>
                   <span>{entry.date}</span>
                   <strong>{entry.title}</strong>
