@@ -11,16 +11,6 @@ const [research, projects] = await Promise.all([
   getCollection('projects', filter)
 ]);
 
-const latestResearch = research
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 4)
-  .map((entry) => ({
-    href: entryUrl('research', entry.id),
-    title: entry.data.title,
-    description: entry.data.description,
-    label: formatDate(entry.data.pubDate)
-  }));
-
 const directionBySlug = new Map(researchDirections.map((direction) => [direction.slug, direction.label]));
 const latestEntries = [
   ...research.map((entry) => ({
@@ -42,13 +32,6 @@ const latestEntries = [
     tone: 'project'
   }))
 ].sort((a, b) => b.timestamp - a.timestamp);
-
-const homeStats = [
-  { label: '研究方向', value: String(researchDirections.length).padStart(2, '0') },
-  { label: '研究笔记', value: String(research.length).padStart(2, '0') },
-  { label: '项目复现', value: String(projects.length).padStart(2, '0') },
-  { label: '最近更新', value: latestResearch[0]?.label ?? '整理中' }
-];
 
 const allEntries = [...research, ...projects];
 const updateCounts = new Map<string, number>();
@@ -156,15 +139,6 @@ const monthLabels = contributionWeeks.map((week) => {
           </div>
         </div>
       </div>
-    </section>
-
-    <section class="home-stats" aria-label="站点统计">
-      {homeStats.map((item) => (
-        <div>
-          <strong>{item.value}</strong>
-          <span>{item.label}</span>
-        </div>
-      ))}
     </section>
 
     <section class="home-insight-row" aria-label="站点动态">

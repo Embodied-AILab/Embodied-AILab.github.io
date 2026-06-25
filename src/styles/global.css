@@ -562,40 +562,6 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
   letter-spacing: .05em;
 }
 .home-side-list a:hover strong { color: var(--accent); }
-.home-stats {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(16px, 3vw, 44px);
-  padding: 4px 0 10px;
-}
-.home-stats div {
-  min-height: 76px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
-.home-stats div + div {
-  padding-left: clamp(16px, 2.8vw, 36px);
-  border-left: 1px solid color-mix(in srgb, var(--line-strong), transparent 46%);
-}
-.home-stats strong {
-  color: var(--ink);
-  font-family: var(--display);
-  font-size: clamp(28px, 3.5vw, 42px);
-  font-weight: 400;
-  line-height: 1;
-}
-.home-stats span {
-  margin-top: 8px;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: var(--fs-xs);
-  letter-spacing: .07em;
-}
 .home-visual-strip {
   display: grid;
   grid-template-columns: 1.45fr .78fr .78fr;
@@ -1512,7 +1478,6 @@ html[data-theme='dark'] .prose {
 }
 html[data-theme='dark'] .home-category-card strong,
 html[data-theme='dark'] .home-side-list strong,
-html[data-theme='dark'] .home-stats strong,
 html[data-theme='dark'] .home-update-item strong,
 html[data-theme='dark'] .home-latest-item strong,
 html[data-theme='dark'] .direction-latest strong,
@@ -1608,9 +1573,6 @@ html[data-theme='dark'] .article-like-button {
   .home-lab { gap: 24px; padding-block: 34px 58px; }
   .home-hero { grid-template-columns: 1fr; min-height: 0; }
   .home-hero-side { min-height: 310px; padding-left: 0; border-left: 0; border-top: 1px solid color-mix(in srgb, var(--line-strong), transparent 18%); padding-top: 28px; }
-  .home-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 28px; }
-  .home-stats div { padding: 0; border-left: 0; }
-  .home-stats div + div { padding-left: 0; border-left: 0; }
   .home-insight-row { grid-template-columns: 1fr; }
   .home-star-section {
     padding: 22px 0;
@@ -1709,8 +1671,6 @@ html[data-theme='dark'] .article-like-button {
   .home-side-list a { grid-template-columns: 1fr; gap: 6px; padding: 14px 0; }
   .home-side-list span { grid-row: auto; }
   .home-side-list strong { font-size: var(--fs-body); }
-  .home-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 18px; }
-  .home-stats div { min-height: 76px; padding: 0; border-radius: 0; }
   .home-insight-row { gap: 0; }
   .home-latest-panel { min-height: 0; }
   .home-latest-head { padding: 0 0 12px; }
