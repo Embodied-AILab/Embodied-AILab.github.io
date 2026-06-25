@@ -1,0 +1,76 @@
+---
+title: "BeyondMimic：从通用运动跟踪到扩散式技能组合"
+description: "梳理任务空间奖励、精确物理建模、失败片段自适应采样，以及它对后续项目的影响。"
+pubDate: 2026-06-25
+tags: ["BeyondMimic", "Motion Tracking", "Isaac Lab"]
+direction: "motion-tracking"
+featured: true
+readingMinutes: 10
+---
+
+> **核心价值：** BeyondMimic 把全身运动跟踪从“跟一条动作”推进到“从大规模动作库里稳定学习可组合技能”。
+
+## 奖励函数
+
+BeyondMimic 的任务奖励主要围绕任务空间跟踪，包含位置、朝向、线速度、角速度等误差。根据任务需要，也可以加入 anchor body 的全局位置和朝向跟踪项。
+
+正则化项主要处理关节限位、动作平滑和自接触。这个组合的好处是：主奖励负责跟踪动作意图，正则项负责避免策略钻物理漏洞。
+
+![BeyondMimic 奖励结构](/notes/open-motion-control/image_02.png)
+
+## 精确建模替代过量域随机化
+
+这里有一个重要观点：不是所有 sim-to-real 差距都应该靠域随机化掩盖。能精确建模的部分应该先建准，再对真正不确定的属性做随机化。
+
+armature 就是典型例子。它表示电机转子经过减速器反射到关节侧的等效转动惯量，设置错误会直接改变关节动态响应。
+
+![精确物理建模](/notes/open-motion-control/image_03.png)
+
+一个简化计算逻辑如下：
+
+```text
+armature_single = J_r * (g1 * g2)^2 + J1 * g2^2 + J2
+
+if 关节是单驱动:
+    joint_armature = armature_single
+else if 关节是双驱动:
+    joint_armature = 2 * armature_single
+
+omega = 2 * pi * 10
+zeta = 2.0
+k_p = joint_armature * omega^2
+k_d = 2 * joint_armature * zeta * omega
+```
+
+这种做法把 PD 增益和物理参数绑定起来，避免把每个关节的控制器都变成经验超参数。
+
+## 失败片段自适应采样
+
+BeyondMimic 会按片段统计失败率，失败率越高的片段，被采样概率越大。每次 reset 不是固定从第 0 帧开始，而是在动作库里随机采样一个高价值片段。
+
+![失败片段自适应采样](/notes/open-motion-control/image_04.png)
+
+```python
+for each episode:
+    f_offset = [f_bar[i] + 0.1 / S for i in range(S)]
+
+    p = [0.0] * S
+    for s in range(S):
+        for u in range(K):
+            future_idx = s + u
+            if future_idx < S:
+                p[s] += (rho ** u) * f_offset[future_idx]
+
+    prob = normalize(p)
+    start_segment = random_choice(range(S), probs=prob)
+    start_time = start_segment + random.uniform(0, 1)
+    reset_robot_to_reference_frame(start_time)
+```
+
+这类采样机制的本质是把训练预算集中到策略最容易失败的局部片段，而不是平均浪费在已经学会的动作上。
+
+## 对后续项目的影响
+
+一些后续项目开始支持手柄、VR、视频、文本等多种输入来控制机器人。但代价也很明显：多数据集并行训练、不同任务导出不同 ONNX、编码器和解码器模块化部署，都会显著提高训练和工程复杂度。
+
+对个人复现来说，最值得先复现的不是完整大系统，而是这三件事：任务空间奖励、精确物理参数、失败片段自适应采样。

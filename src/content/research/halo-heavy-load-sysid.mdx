@@ -1,0 +1,38 @@
+---
+title: "HALO：重载人形机器人的两阶段系统辨识"
+description: "用固定脚采集、全身轨迹重建和可微仿真，把重载带来的结构化 sim-to-real gap 拆开处理。"
+pubDate: 2026-06-25
+tags: ["System Identification", "MuJoCo XLA", "Sim-to-Real"]
+direction: "simulators"
+featured: true
+paperTitle: "Closing Sim-to-Real Gap for Heavy-loaded Humanoid Agile Motion Skills via Differentiable Simulation"
+paperUrl: "https://arxiv.org/abs/2603.15084"
+projectUrl: "https://mwondering.github.io/halo-humanoid/"
+venue: "arXiv"
+year: 2026
+readingMinutes: 7
+---
+
+> **核心问题：** 人形机器人携带重物时，质量、质心和惯性都会发生系统性变化。把这种变化当作普通噪声做域随机化，往往会让策略变保守，也不一定能真正对齐真实动力学。
+
+## 固定脚采集解决了什么
+
+浮动基人形机器人仅靠关节编码器，很难准确恢复 base 在世界坐标系中的位姿。即使把单脚固定、把系统近似成固定基，关节编码器噪声仍可能让正向运动学反解出的 base 位姿持续漂移，最后出现固定脚漂移、移动脚穿地等物理矛盾。
+
+HALO 的处理思路是：在每个时间步求解一个约束二次规划，同时调整根部位姿和下肢关节角度，让固定脚位置等于夹具固定点，并约束移动脚不穿透地面。这样得到的全局轨迹在运动学上更一致，后续系统辨识才有可靠输入。
+
+## 为什么要分两阶段辨识
+
+重载辨识最麻烦的地方在于：机器人本体模型本来就有误差，而负载又会引入新的误差。如果不拆开，优化器可能把 base model 的误差错误归因到 payload 参数上。
+
+更稳的做法是先用无负载轨迹校准机器人基础模型，再在这个校准模型上只优化和 payload 相关的参数。这样可以把“本体模型不准”和“负载导致的动力学变化”分开处理。
+
+## 对仿真器使用的启发
+
+这个方向的重点不是单纯换一个更强的仿真器，而是把可微仿真放进数据闭环：真实轨迹进入 MuJoCo XLA，参数通过多步轨迹误差直接优化，最后再把校准后的模型用于强化学习训练。
+
+工程上可以记住三点：
+
+- 固定脚约束降低了浮动基状态重建的不适定性。
+- 两阶段辨识避免 payload 参数替基础模型背锅。
+- 先减少结构化模型偏差，再训练策略，比单纯扩大域随机化范围更有针对性。

@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import { formatDate, sectionMeta, type SectionKey } from '../utils/content';
 import { getResearchDirection } from '../data/researchDirections';
+import ArticleReactions from '../components/ArticleReactions.astro';
 
 interface Props {
   entry: any;
@@ -58,7 +59,10 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
     <div class="article-divider"><span></span><i></i></div>
 
     <div class="article-layout">
-      <article class="prose"><slot /></article>
+      <div class="article-main-column">
+        <article class="prose"><slot /></article>
+        <ArticleReactions entryId={`${collection}:${entry.id}`} />
+      </div>
 
       {visibleHeadings.length > 0 && (
         <aside class="toc" aria-label="本页目录">

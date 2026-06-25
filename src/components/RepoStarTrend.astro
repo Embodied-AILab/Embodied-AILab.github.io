@@ -1,0 +1,132 @@
+---
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+const repo = 'Embodied-AILab/Embodied-AILab.github.io';
+---
+
+<article class:list={['star-trend-card', compact && 'compact']} data-star-trend data-repo={repo}>
+  <div class="star-trend-head">
+    <div>
+      <span>GitHub Star</span>
+      <strong data-star-count>--</strong>
+    </div>
+    <a href={`https://github.com/${repo}`} target="_blank" rel="noreferrer" aria-label="打开 GitHub 仓库">
+      <span>Star</span>
+      <i aria-hidden="true">↗</i>
+    </a>
+  </div>
+  <svg class="star-trend-chart" viewBox="0 0 280 108" role="img" aria-label="GitHub Star 增长趋势">
+    <path data-star-area d="" />
+    <polyline data-star-line points="" />
+    <g data-star-dots></g>
+  </svg>
+  <p data-star-note>读取 Star 数据中</p>
+</article>
+
+<script is:inline>
+  (() => {
+    const repoCache = window.__eaiRepoStarCache || (window.__eaiRepoStarCache = new Map());
+
+    const fetchJson = async (url, options = {}) => {
+      const response = await fetch(url, options);
+      if (!response.ok) throw new Error(`GitHub API ${response.status}`);
+      return response.json();
+    };
+
+    const loadRepoStars = async (repo) => {
+      if (repoCache.has(repo)) return repoCache.get(repo);
+
+      const promise = (async () => {
+        const repoInfo = await fetchJson(`https://api.github.com/repos/${repo}`);
+        const total = Number(repoInfo.stargazers_count || 0);
+        const pages = Math.min(Math.ceil(total / 100), 5);
+        const events = [];
+
+        for (let page = 1; page <= pages; page += 1) {
+          const data = await fetchJson(`https://api.github.com/repos/${repo}/stargazers?per_page=100&page=${page}`, {
+            headers: { Accept: 'application/vnd.github.star+json' }
+          });
+          if (!Array.isArray(data)) break;
+          data.forEach((item) => {
+            if (item?.starred_at) events.push(new Date(item.starred_at));
+          });
+        }
+
+        events.sort((a, b) => a.valueOf() - b.valueOf());
+        return { total, events };
+      })();
+
+      repoCache.set(repo, promise);
+      return promise;
+    };
+
+    const makePoints = (events, total) => {
+      const width = 256;
+      const height = 76;
+      const left = 12;
+      const top = 14;
+      const baseline = top + height;
+
+      if (events.length === 0 || total === 0) {
+        return {
+          line: `${left},${baseline} ${left + width},${baseline}`,
+          area: `M${left},${baseline} L${left + width},${baseline}`,
+          dots: []
+        };
+      }
+
+      const start = events[0].valueOf();
+      const end = Math.max(events[events.length - 1].valueOf(), start + 1);
+      const max = Math.max(total, events.length, 1);
+      const points = events.map((date, index) => {
+        const x = left + ((date.valueOf() - start) / (end - start)) * width;
+        const y = baseline - ((index + 1) / max) * height;
+        return [x, y];
+      });
+
+      if (points.length === 1) points.unshift([left, baseline]);
+      const line = points.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+      const area = `M${points[0][0].toFixed(1)},${baseline} L${line} L${points[points.length - 1][0].toFixed(1)},${baseline} Z`;
+      const dots = points.length > 8 ? [points[0], points[Math.floor(points.length / 2)], points[points.length - 1]] : points;
+
+      return { line, area, dots };
+    };
+
+    const renderCard = async (card) => {
+      if (card.dataset.starReady === 'true') return;
+      card.dataset.starReady = 'true';
+
+      const repo = card.dataset.repo;
+      const count = card.querySelector('[data-star-count]');
+      const note = card.querySelector('[data-star-note]');
+      const line = card.querySelector('[data-star-line]');
+      const area = card.querySelector('[data-star-area]');
+      const dotsGroup = card.querySelector('[data-star-dots]');
+
+      try {
+        const { total, events } = await loadRepoStars(repo);
+        const points = makePoints(events, total);
+        count.textContent = String(total);
+        line.setAttribute('points', points.line);
+        area.setAttribute('d', points.area);
+        dotsGroup.innerHTML = points.dots
+          .map(([x, y]) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.6"></circle>`)
+          .join('');
+        note.textContent = events.length > 0
+          ? `已读取 ${events.length} 条公开 Star 时间记录`
+          : '暂无公开 Star 时间记录';
+      } catch (error) {
+        count.textContent = '--';
+        line.setAttribute('points', '12,90 268,90');
+        area.setAttribute('d', 'M12,90 L268,90');
+        dotsGroup.innerHTML = '';
+        note.textContent = 'Star 数据暂时读取失败';
+      }
+    };
+
+    document.querySelectorAll('[data-star-trend]').forEach(renderCard);
+  })();
+</script>

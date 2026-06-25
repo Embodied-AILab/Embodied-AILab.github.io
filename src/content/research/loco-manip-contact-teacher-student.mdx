@@ -1,0 +1,59 @@
+---
+title: "物体交互：接触图奖励与教师学生训练"
+description: "HumanX 和 HAIC 都在处理同一个问题：如何让学生策略在部署时用有限观测完成接触丰富任务。"
+pubDate: 2026-06-25
+tags: ["Loco-Manip", "Contact", "Teacher-Student"]
+direction: "loco-manip"
+featured: true
+readingMinutes: 8
+---
+
+> **核心问题：** 移动操作任务里，机器人不只要跟踪身体动作，还要保持和物体的接触关系，并在部署时用有限观测估计外部交互。
+
+## 接触图模仿奖励
+
+HumanX 的接触图可以理解为一个 0/1 向量，每个位置对应一个身体部位，比如左手、右手、左脚、右脚、头部或躯干。如果该部位当前与物体接触，就标记为 1，否则为 0。
+
+奖励计算时，先比较仿真接触状态和参考接触状态的逐元素差异，再按接触敏感度加权，最后用指数形式转成奖励。
+
+```python
+def compute_contact_reward(sim_contact, ref_contact, contact_weights):
+    contact_error = torch.abs(sim_contact - ref_contact)
+    weighted_sum = torch.sum(contact_weights * contact_error)
+    reward = torch.exp(-weighted_sum)
+    return reward
+```
+
+这个奖励项可以让策略不仅模仿姿态，还模仿“哪些部位应该碰到物体”。
+
+## HAIC 的两阶段训练
+
+HAIC 第一阶段包含教师策略、世界模型和学生策略。教师策略使用特权信息提供监督信号；世界模型把可观测输入转换成对学生策略有用的预测特权特征；学生策略输入预测特权特征、本体感知历史和参考运动。
+
+![HAIC 第一阶段](/notes/open-motion-control/image_09.png)
+
+第二阶段沿用相同输入形式，但教师 Actor 冻结，Critic 只提供价值信号。世界模型继续用 EMA 权重做预测，同时监督物体状态预测和特权特征对齐；学生策略根据教师 Critic 输出更新 Actor。
+
+![HAIC 第二阶段](/notes/open-motion-control/image_10.png)
+
+最终部署的是学生策略和世界模型，而不是依赖完整特权状态的教师。
+
+## HumanX 的外力估计思路
+
+HumanX 也强调：学生策略可以仅靠本体感知和历史观测学到外力感知与应对。训练时使用多个特权教师，学生通过 PPO + BC 联合训练继承技能表达。
+
+从动力学角度看，外部接触力矩可以写成：
+
+```python
+def estimate_external_torque(q, q_dot, q_ddot, tau_cmd, model):
+    M = model.mass_matrix(q)
+    C = model.coriolis_matrix(q, q_dot)
+    G = model.gravity_vector(q)
+    tau_f = model.friction(q_dot)
+
+    tau_dyn = M @ q_ddot + C @ q_dot + G + tau_f
+    tau_ext = tau_cmd - tau_dyn
+    return tau_ext
+```
+
+这说明接触感知不一定完全依赖外部传感器。只要训练目标设计合理，策略可以从关节状态、根节点角速度、重力方向、上一时刻动作、PD 误差和多帧历史里学到一部分外部交互信息。

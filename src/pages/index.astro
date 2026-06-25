@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { entryUrl, formatDate } from '../utils/content';
 import { researchDirections } from '../data/researchDirections';
+import RepoStarTrend from '../components/RepoStarTrend.astro';
 
 const filter = ({ data }: { data: { draft?: boolean } }) => import.meta.env.PROD ? data.draft !== true : true;
 const [research, projects] = await Promise.all([
@@ -87,6 +88,15 @@ const latestProjects = projects
           </a>
         ))}
       </div>
+    </section>
+
+    <section class="home-pulse" aria-label="站点数据">
+      <RepoStarTrend />
+      <article class="home-pulse-note">
+        <span>内容同步</span>
+        <strong>飞书运动控制笔记已拆分进研究方向</strong>
+        <p>后续继续补充论文和项目时，首页会自动按方向展示最新内容。</p>
+      </article>
     </section>
 
     <section class="home-updates" aria-label="最近更新">

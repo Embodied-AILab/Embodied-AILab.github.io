@@ -1,0 +1,62 @@
+---
+title: "RGMT：历史编码器与指令编码器如何改进运动跟踪"
+description: "把历史本体感知和参考指令窗口分开编码，再让 Actor 输出相对参考轨迹的残差关节目标。"
+pubDate: 2026-06-25
+tags: ["Motion Tracking", "Transformer", "Actor"]
+direction: "motion-tracking"
+featured: true
+projectUrl: "https://zeonsunlightyu.github.io/RGMT.github.io/"
+venue: "Project"
+year: 2026
+readingMinutes: 8
+---
+
+> **一句话：** RGMT 不是只把更多观测塞给 Actor，而是把“机器人现在的动态趋势”和“参考指令中最相关的片段”显式对齐。
+
+## 历史编码器
+
+历史编码器把最近 \(K+1\) 步的本体感知观测输入因果 Transformer。每一步观测先通过 MLP 映射成 token，再加入位置编码；因果注意力保证当前时刻只能看到当前和过去的信息。
+
+这样得到的动态特征向量，更像是对当前身体状态、接触状态和运动趋势的压缩描述，而不是一帧静态观测。
+
+## 指令编码器
+
+指令编码器处理的是一段参考指令窗口，窗口里包含过去、现在和未来多步的参考关节位置、参考速度等信息。
+
+RGMT 用历史编码器输出的动态特征作为查询，通过交叉注意力从指令窗口中挑选当前最相关、最可执行的部分。这样 Actor 不需要平均吸收整段参考轨迹，而是可以根据当前物理状态选择更合理的参考片段。
+
+![RGMT 编码结构](/notes/open-motion-control/image_01.png)
+
+## Actor 输出方式
+
+普通策略常见做法是输出归一化 action，再乘以 `action_scale`，最后加到默认关节位置上：
+
+```python
+actions_raw = policy(obs)
+actions_scaled = actions_raw * action_scale
+q_target = default_dof_pos + actions_scaled + motor_offsets
+torque = Kp * (q_target - q) - Kd * dq
+```
+
+RGMT 更强调参考轨迹本身的作用：Actor 输出残差 \(\Delta q\)，目标位置是参考关节位置加残差。
+
+```python
+actions_raw = actor(torch.cat([obs_t, u_t]))
+q_target = q_ref + actions_raw
+torque = Kp * (q_target - q) - Kd * dq
+```
+
+这个差别很关键：策略不是凭空生成目标关节位置，而是在参考轨迹附近做可执行修正。
+
+## 和 Any2Track 的共同点
+
+Any2Track 也把 action 约束在参考轨迹附近，只是会先经过 `tanh` 映射，再用逐关节缩放因子控制偏移范围。
+
+```python
+actions_raw = policy(obs)
+actions_tanh = torch.tanh(actions_raw)
+scaled_offset = alpha * actions_tanh
+q_target = q_t_ref + scaled_offset
+```
+
+两者共同指向一个结论：全身运动跟踪里，Actor 的自由度不能无限放大。越接近真实部署，越需要把动作输出限制在参考轨迹和物理可行区域附近。
