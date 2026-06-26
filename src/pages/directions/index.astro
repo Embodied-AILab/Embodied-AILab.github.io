@@ -7,7 +7,7 @@ import { researchDirections } from '../../data/researchDirections';
 const entries = (await getCollection('research', ({ data }) => import.meta.env.PROD ? data.draft !== true : true))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const cards = researchDirections.map((direction, index) => {
+const cards = researchDirections.map((direction) => {
   const articles = entries
     .filter((entry) => entry.data.direction === direction.slug)
     .map((entry) => ({
@@ -19,7 +19,6 @@ const cards = researchDirections.map((direction, index) => {
 
   return {
     ...direction,
-    index: String(index + 1).padStart(2, '0'),
     count: entries.filter((entry) => entry.data.direction === direction.slug).length,
     articles
   };
@@ -28,7 +27,6 @@ const cards = researchDirections.map((direction, index) => {
 
 <BaseLayout title="文章索引" description="按具身智能技术方向整理论文、算法和项目笔记。">
   <section class="listing-hero shell">
-    <div class="listing-index">01</div>
     <h1>文章索引</h1>
     <p>按研究方向直接列出所有论文笔记，从首页进来后第二次点击就能进入目标文章。</p>
     <div class="listing-meta"><span>{String(entries.length).padStart(2, '0')} 篇内容</span><i></i><span>数据重定向 · 运动跟踪 · AMP · 世界模型 · Loco-Manip · 数据生成 · 仿真器</span></div>
@@ -37,7 +35,6 @@ const cards = researchDirections.map((direction, index) => {
   <nav class="shell direction-quick-nav" aria-label="方向快速索引">
     {cards.map((card) => (
       <a href={`#${card.slug}`} style={`--module-color: ${card.color}`}>
-        <span>{card.index}</span>
         <strong>{card.label}</strong>
         <em>{card.count}</em>
       </a>
@@ -50,7 +47,6 @@ const cards = researchDirections.map((direction, index) => {
         <article id={card.slug} class="direction-card" style={`--module-color: ${card.color}`}>
           <div class="direction-card-intro">
             <a class="direction-card-head" href={`/directions/${card.slug}/`} aria-label={`查看${card.label}`}>
-              <span>{card.index}</span>
               <h2>{card.label}</h2>
               <i aria-hidden="true">↗</i>
             </a>
