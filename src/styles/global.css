@@ -988,11 +988,8 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
 .article-grid-list .article-card p { font-size: var(--fs-md); }
 
 /* Listing pages */
-.listing-hero { min-height: 260px; display: grid; align-content: end; padding-block: 44px 26px; border-bottom: 0; }
+.listing-hero { min-height: 210px; display: grid; align-content: end; padding-block: 44px 18px; border-bottom: 0; }
 .listing-hero h1 { max-width: 900px; margin: 18px 0 14px; color: var(--ink); font-family: var(--display); font-size: clamp(46px, 5.6vw, 72px); font-weight: 400; line-height: 1.02; letter-spacing: 0; }
-.listing-hero > p { max-width: 760px; margin: 0; color: var(--muted); font-size: clamp(16px, 1.35vw, 19px); line-height: 1.86; }
-.listing-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 24px; color: var(--faint); font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: .05em; }
-.listing-meta i { display: none; }
 .listing-section { padding-block: 28px 108px; }
 .empty-state { padding: 48px; border: 1px dashed var(--line-strong); border-radius: 18px; color: var(--muted); background: color-mix(in srgb, var(--surface), transparent 20%); text-align: center; }
 
