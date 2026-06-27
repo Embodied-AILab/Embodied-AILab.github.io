@@ -1177,8 +1177,8 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
 .prose pre {
   position: relative;
   overflow-x: auto;
-  margin: 2em 0;
-  padding: 54px 24px 24px;
+  margin: 1.65em 0;
+  padding: 48px 22px 20px;
   border: 1px solid #303846;
   border-radius: 16px;
   background: #0d1117 !important;
@@ -1225,7 +1225,7 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
   background: transparent;
   color: #e6edf3;
   font-size: 13px;
-  line-height: 1.85;
+  line-height: 1.42;
   counter-reset: code-line;
 }
 .prose pre code,
@@ -1235,8 +1235,17 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
 .prose pre code .line {
   position: relative;
   display: block;
-  min-height: 1.85em;
-  padding-left: 46px;
+  min-height: 1.42em;
+  padding-left: 42px;
+}
+.prose pre code .line:empty {
+  min-height: .62em;
+}
+.prose pre code .line:has(> span:empty) {
+  min-height: .46em;
+}
+.prose pre code .line:has(> span:empty)::before {
+  content: '';
 }
 .prose pre code .line::before {
   counter-increment: code-line;
