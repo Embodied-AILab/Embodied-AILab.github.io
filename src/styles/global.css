@@ -782,7 +782,8 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
 .home-counter-section .visitor-counter {
   width: 100%;
   min-height: 190px;
-  justify-content: center;
+  align-content: center;
+  justify-content: start;
   border: 0;
   background: transparent;
   box-shadow: none;
@@ -1338,6 +1339,7 @@ html[data-theme='dark'] .prose :not(pre) > code {
 .visitor-counter {
   position: relative;
   display: grid;
+  justify-items: start;
   gap: 8px;
   padding: 18px 0 20px;
   border: 0;
