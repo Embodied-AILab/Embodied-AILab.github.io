@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { entryUrl, formatDate } from '../utils/content';
 import { researchDirections } from '../data/researchDirections';
-import RepoStarTrend from '../components/RepoStarTrend.astro';
+import VisitorCounter from '../components/VisitorCounter.astro';
 
 const filter = ({ data }: { data: { draft?: boolean } }) => import.meta.env.PROD ? data.draft !== true : true;
 const [research, projects] = await Promise.all([
@@ -142,8 +142,8 @@ const monthLabels = contributionWeeks.map((week) => {
     </section>
 
     <section class="home-insight-row" aria-label="站点动态">
-      <div class="home-star-section" aria-label="GitHub Star">
-        <RepoStarTrend compact />
+      <div class="home-counter-section" aria-label="点击量统计">
+        <VisitorCounter />
       </div>
       <article class="home-latest-panel" aria-label="最新文章">
         <div class="home-latest-head">
