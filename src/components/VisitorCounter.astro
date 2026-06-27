@@ -1,21 +1,19 @@
 ---
 const counterId = '1782567688';
-const counterSrc = `https://smallcounter.com/map/view.php?type=180&id=${counterId}`;
-const counterHref = `https://smallcounter.com/vmap/${counterId}/`;
+const counterSrc = `https://smallcounter.com/count.php?count_value=&c_style=4&id=${counterId}`;
+const counterHref = `https://smallcounter.com/cc_stats/${counterId}/`;
 ---
 
-<section class="visitor-counter" aria-label="访问地图统计">
-  <a class="visitor-counter-map" href={counterHref} target="_blank" rel="noreferrer" aria-label="查看访问地图统计">
+<section class="visitor-counter" aria-label="点击量统计">
+  <span class="visitor-counter-label">点击量</span>
+  <a class="visitor-counter-count" href={counterHref} target="_blank" rel="noreferrer" aria-label="查看点击量统计">
     <img
       src={counterSrc}
-      width="180"
-      height="90"
       loading="lazy"
       decoding="async"
       referrerpolicy="no-referrer-when-downgrade"
-      alt="SmallCounter world visitor map"
+      alt="SmallCounter page view count"
     />
   </a>
-  <p>visits from global locations</p>
   <span>tracked by SmallCounter</span>
 </section>
