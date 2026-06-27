@@ -1321,114 +1321,47 @@ html[data-theme='dark'] .prose :not(pre) > code {
 .toc a { display: block; padding: 5px 0; color: var(--muted); font-size: 13px; line-height: 1.45; transition: .18s ease; }
 .toc a:hover { color: var(--accent); transform: translateX(3px); }
 .toc-sub a { padding-left: 13px; color: var(--faint); }
-.article-reactions {
+.visitor-counter {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  margin-top: 0;
+  gap: 8px;
+  justify-items: center;
+  padding: 13px 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--line-strong), transparent 16%);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface), transparent 10%), color-mix(in srgb, var(--surface-2), transparent 20%));
 }
-.article-like-card,
+.visitor-counter-map {
+  display: block;
+  width: min(100%, 180px);
+  overflow: hidden;
+  border-radius: 9px;
+  line-height: 0;
+  background: #202020;
+}
+.visitor-counter-map img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 0;
+}
+.visitor-counter p,
+.visitor-counter span {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--latin);
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: center;
+}
+.visitor-counter span {
+  color: var(--faint);
+}
 .star-trend-card {
   min-width: 0;
   border: 1px solid var(--line-strong);
   background: color-mix(in srgb, var(--surface), transparent 22%);
   box-shadow: var(--shadow-sm);
-}
-.article-like-card {
-  display: grid;
-  align-content: space-between;
-  gap: 10px;
-  padding: 12px;
-}
-.article-like-button {
-  width: 100%;
-  min-height: 58px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 10px;
-  padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--surface);
-  color: var(--ink);
-  cursor: pointer;
-  transition: .22s ease;
-}
-.article-like-button:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--agent), transparent 20%);
-}
-.article-like-button svg {
-  width: 21px;
-  height: 21px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linejoin: round;
-}
-.article-like-button span {
-  justify-self: start;
-  font-size: var(--fs-md);
-  font-weight: 650;
-  line-height: 1.2;
-}
-.article-like-button strong {
-  width: 28px;
-  height: 28px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--surface-2);
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: var(--fs-xs);
-}
-.article-reactions.is-liked .article-like-button {
-  border-color: color-mix(in srgb, var(--agent), transparent 10%);
-  color: var(--agent);
-  background: color-mix(in srgb, var(--agent), transparent 91%);
-}
-.article-reactions.is-liked .article-like-button svg {
-  fill: currentColor;
-}
-.article-like-card p {
-  margin: 0;
-  color: var(--faint);
-  font-family: var(--mono);
-  font-size: var(--fs-micro);
-  letter-spacing: .06em;
-}
-.article-sidebar .article-like-card,
-.article-sidebar .star-trend-card {
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-  padding: 0;
-}
-.article-sidebar .article-like-button {
-  background: color-mix(in srgb, var(--surface-2), transparent 18%);
-}
-.article-sidebar .star-trend-head span {
-  font-size: 12px;
-}
-.article-sidebar .star-trend-head strong {
-  font-size: 28px;
-}
-.article-sidebar .star-trend-head a {
-  gap: 6px;
-  font-size: 12px;
-}
-.article-sidebar .star-trend-head a i {
-  width: 24px;
-  height: 24px;
-}
-.article-sidebar .star-trend-chart {
-  height: 74px;
-}
-.article-sidebar .star-trend-card p {
-  font-size: 11px;
-  line-height: 1.45;
 }
 .star-trend-card {
   min-height: 182px;
@@ -1533,7 +1466,6 @@ html[data-theme='dark'] .home-category-card,
 html[data-theme='dark'] .home-visual-strip figure,
 html[data-theme='dark'] .home-update-panel,
 html[data-theme='dark'] .article-card-link,
-html[data-theme='dark'] .article-like-card,
 html[data-theme='dark'] .star-trend-card,
 html[data-theme='dark'] .about-card,
 html[data-theme='dark'] .search-box,
@@ -1560,11 +1492,18 @@ html[data-theme='dark'] .home-star-section .star-trend-card {
   background: transparent;
   box-shadow: none;
 }
-html[data-theme='dark'] .article-sidebar .article-like-card,
-html[data-theme='dark'] .article-sidebar .star-trend-card {
-  border: 0;
-  background: transparent;
-  box-shadow: none;
+html[data-theme='dark'] .visitor-counter {
+  border-color: rgba(255,255,255,.14);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)),
+    rgba(255,255,255,.035);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+}
+html[data-theme='dark'] .visitor-counter p {
+  color: rgba(238, 242, 247, .76);
+}
+html[data-theme='dark'] .visitor-counter span {
+  color: rgba(238, 242, 247, .58);
 }
 html[data-theme='dark'] .home-hero-side,
 html[data-theme='dark'] .home-star-section,
@@ -1670,8 +1609,7 @@ html[data-theme='dark'] .article-divider span {
 html[data-theme='dark'] .ambient-dock,
 html[data-theme='dark'] .icon-button,
 html[data-theme='dark'] .theme-track,
-html[data-theme='dark'] .mobile-menu summary,
-html[data-theme='dark'] .article-like-button {
+html[data-theme='dark'] .mobile-menu summary {
   border-color: var(--line-strong);
   background: var(--surface-2);
 }
@@ -1904,7 +1842,6 @@ html[data-theme='dark'] .article-like-button {
   .article-header { padding-block: 52px 42px; }
   .article-deck { font-size: var(--fs-body); }
   .article-layout { padding-bottom: 80px; }
-  .article-reactions { grid-template-columns: 1fr; margin-top: 42px; }
   .prose { font-size: 15px; }
   .prose h2 { font-size: 26px; }
   .about-layout { padding-bottom: 80px; }
