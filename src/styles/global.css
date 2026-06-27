@@ -1178,67 +1178,70 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
   position: relative;
   overflow-x: auto;
   margin: 1.65em 0;
-  padding: 48px 22px 20px;
-  border: 1px solid #303846;
-  border-radius: 16px;
-  background: #0d1117 !important;
+  padding: 43px 0 18px;
+  border: 1px solid #323232;
+  border-radius: 10px;
+  background: #1e1e1e !important;
   box-shadow:
-    0 24px 70px rgba(17, 24, 39, .18),
-    inset 0 1px 0 rgba(255, 255, 255, .06);
+    0 20px 58px rgba(17, 24, 39, .18),
+    inset 0 1px 0 rgba(255, 255, 255, .035);
 }
 .prose pre::before {
-  content: attr(data-language);
+  content: attr(data-language) '  •  snippet';
   position: absolute;
   inset: 0 0 auto;
-  height: 38px;
+  z-index: 3;
+  height: 34px;
   display: flex;
   align-items: center;
-  padding-left: 76px;
-  border-bottom: 1px solid rgba(240, 246, 252, .1);
-  border-radius: 16px 16px 0 0;
+  padding-left: 18px;
+  border-bottom: 1px solid #2d2d2d;
+  border-radius: 10px 10px 0 0;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .065), rgba(255, 255, 255, .025)),
-    #111827;
-  color: #9ca3af;
+    linear-gradient(180deg, rgba(255, 255, 255, .035), rgba(255, 255, 255, .015)),
+    #252526;
+  color: #cccccc;
   font-family: var(--code);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
 }
 .prose pre::after {
   content: '';
   position: absolute;
-  top: 14px;
-  left: 22px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #ff5f56;
-  box-shadow: 18px 0 #ffbd2e, 36px 0 #27c93f;
+  top: 34px;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  width: 54px;
+  border-right: 1px solid #2d2d2d;
+  background: #181818;
 }
 .prose pre code {
   display: grid;
   gap: 0;
   align-content: start;
+  position: relative;
+  z-index: 1;
   min-width: max-content;
   padding: 0;
   border: 0;
   background: transparent;
-  color: #e6edf3;
+  color: #d4d4d4;
   font-size: 13px;
   line-height: 1.34;
   counter-reset: code-line;
 }
 .prose pre code,
 .prose pre code span {
-  color: var(--shiki-dark, #e6edf3) !important;
+  color: var(--shiki-dark, #d4d4d4) !important;
 }
 .prose pre code .line {
   position: relative;
   display: block;
   min-height: 1.34em;
-  padding-left: 42px;
+  padding: 0 24px 0 74px;
 }
 .prose pre code .line:empty {
   display: none;
@@ -1250,24 +1253,24 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
   counter-increment: code-line;
   content: counter(code-line);
   position: absolute;
-  left: 0;
+  left: 14px;
   width: 26px;
-  color: #6e7681;
+  color: #858585;
   font-variant-numeric: tabular-nums;
   text-align: right;
   user-select: none;
 }
 .prose pre code span { font-size: inherit; }
 html[data-theme='dark'] .prose pre {
-  border-color: #303846;
-  background: #0d1117 !important;
+  border-color: #323232;
+  background: #1e1e1e !important;
   box-shadow:
     0 18px 48px rgba(0, 0, 0, .36),
     inset 0 1px 0 rgba(255, 255, 255, .04);
 }
 html[data-theme='dark'] .prose pre code,
 html[data-theme='dark'] .prose pre code span {
-  color: var(--shiki-dark, #e8edf4) !important;
+  color: var(--shiki-dark, #d4d4d4) !important;
 }
 html[data-theme='dark'] .prose :not(pre) > code {
   border-color: #465268;
