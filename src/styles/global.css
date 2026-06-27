@@ -810,21 +810,14 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
 }
 .home-latest-head {
   display: flex;
-  align-items: start;
+  align-items: baseline;
   justify-content: space-between;
   gap: 18px;
   padding: 0 0 16px;
   border-bottom: 0;
 }
-.home-latest-head span {
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 14px;
-  line-height: 1.4;
-  letter-spacing: .05em;
-}
 .home-latest-head h2 {
-  margin: 4px 0 0;
+  margin: 0;
   color: var(--ink);
   font-family: var(--display);
   font-size: var(--fs-3xl);
@@ -834,7 +827,7 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
 .home-latest-head a {
   color: var(--accent);
   font-size: 15px;
-  line-height: 1.4;
+  line-height: 1.2;
   white-space: nowrap;
 }
 .home-latest-list {
@@ -1676,8 +1669,7 @@ html[data-theme='dark'] .mobile-menu summary {
   .home-hero-copy { padding: 6px 0; }
   .home-eyebrow,
   .home-side-head span,
-  .home-side-head a,
-  .home-latest-head span {
+  .home-side-head a {
     font-size: 13px;
   }
   .home-hero h1 {

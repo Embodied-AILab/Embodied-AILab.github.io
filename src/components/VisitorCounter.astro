@@ -1,14 +1,14 @@
 ---
 interface Props {
-  scope?: 'site' | 'page';
+  scope?: 'home' | 'page';
 }
 
 const { scope = 'page' } = Astro.props;
-const isSiteCounter = scope === 'site';
-const containerId = isSiteCounter ? 'busuanzi_container_site_pv' : 'busuanzi_container_page_pv';
-const valueId = isSiteCounter ? 'busuanzi_value_site_pv' : 'busuanzi_value_page_pv';
-const label = isSiteCounter ? '全站点击' : '本文点击';
-const note = isSiteCounter ? '累计访问次数' : '当前页面访问次数';
+const isHomeCounter = scope === 'home';
+const containerId = 'busuanzi_container_page_pv';
+const valueId = 'busuanzi_value_page_pv';
+const label = isHomeCounter ? '首页点击' : '本文点击';
+const note = isHomeCounter ? '当前首页访问次数' : '当前页面访问次数';
 ---
 
 <section class="visitor-counter" aria-label="点击量统计">
@@ -17,4 +17,16 @@ const note = isSiteCounter ? '累计访问次数' : '当前页面访问次数';
   <span class="visitor-counter-note">{note}</span>
 </section>
 
-<script is:inline async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script is:inline>
+  (() => {
+    const localHosts = new Set(['localhost', '127.0.0.1', '::1']);
+    if (localHosts.has(window.location.hostname)) return;
+    if (document.querySelector('script[data-busuanzi-counter]')) return;
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.dataset.busuanziCounter = 'true';
+    script.src = 'https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js';
+    document.head.appendChild(script);
+  })();
+</script>
