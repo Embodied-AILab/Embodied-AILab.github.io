@@ -54,21 +54,23 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
     <div class="article-layout">
       <div class="article-main-column">
         <article class="prose"><slot /></article>
-        <ArticleReactions entryId={`${collection}:${entry.id}`} />
       </div>
 
-      {visibleHeadings.length > 0 && (
-        <aside class="toc" aria-label="本页目录">
-          <div class="toc-title">本页目录</div>
-          <ol>
-            {visibleHeadings.map((heading) => (
-              <li class:list={[heading.depth === 3 && 'toc-sub']}>
-                <a href={`#${heading.slug}`}>{heading.text}</a>
-              </li>
-            ))}
-          </ol>
-        </aside>
-      )}
+      <aside class="article-sidebar" aria-label="文章侧边栏">
+        {visibleHeadings.length > 0 && (
+          <nav class="toc" aria-label="本页目录">
+            <div class="toc-title">本页目录</div>
+            <ol>
+              {visibleHeadings.map((heading) => (
+                <li class:list={[heading.depth === 3 && 'toc-sub']}>
+                  <a href={`#${heading.slug}`}>{heading.text}</a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+        <ArticleReactions entryId={`${collection}:${entry.id}`} />
+      </aside>
     </div>
   </div>
 </BaseLayout>
