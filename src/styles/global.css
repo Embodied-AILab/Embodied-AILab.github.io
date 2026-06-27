@@ -1179,13 +1179,47 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
 .prose blockquote p { margin: 0; }
 .prose code { padding: 2px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-2); font-family: var(--code); font-size: .9em; }
 .prose pre {
+  position: relative;
   overflow-x: auto;
-  margin: 1.7em 0;
-  padding: 24px 26px;
-  border: 1px solid var(--line-strong);
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--surface), #ffffff 36%) !important;
-  box-shadow: var(--shadow-sm);
+  margin: 2em 0;
+  padding: 54px 24px 24px;
+  border: 1px solid #303846;
+  border-radius: 16px;
+  background: #0d1117 !important;
+  box-shadow:
+    0 24px 70px rgba(17, 24, 39, .18),
+    inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+.prose pre::before {
+  content: attr(data-language);
+  position: absolute;
+  inset: 0 0 auto;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  padding-left: 76px;
+  border-bottom: 1px solid rgba(240, 246, 252, .1);
+  border-radius: 16px 16px 0 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .065), rgba(255, 255, 255, .025)),
+    #111827;
+  color: #9ca3af;
+  font-family: var(--code);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.prose pre::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 22px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff5f56;
+  box-shadow: 18px 0 #ffbd2e, 36px 0 #27c93f;
 }
 .prose pre code {
   display: block;
@@ -1193,14 +1227,36 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
   padding: 0;
   border: 0;
   background: transparent;
-  color: inherit;
-  font-size: 14px;
-  line-height: 1.82;
+  color: #e6edf3;
+  font-size: 13px;
+  line-height: 1.85;
+  counter-reset: code-line;
+}
+.prose pre code,
+.prose pre code span {
+  color: var(--shiki-dark, #e6edf3) !important;
+}
+.prose pre code .line {
+  position: relative;
+  display: block;
+  min-height: 1.85em;
+  padding-left: 46px;
+}
+.prose pre code .line::before {
+  counter-increment: code-line;
+  content: counter(code-line);
+  position: absolute;
+  left: 0;
+  width: 26px;
+  color: #6e7681;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  user-select: none;
 }
 .prose pre code span { font-size: inherit; }
 html[data-theme='dark'] .prose pre {
-  border-color: #455268;
-  background: #121923 !important;
+  border-color: #303846;
+  background: #0d1117 !important;
   box-shadow:
     0 18px 48px rgba(0, 0, 0, .36),
     inset 0 1px 0 rgba(255, 255, 255, .04);
