@@ -1,19 +1,20 @@
 ---
-const counterId = '1782567688';
-const counterSrc = `https://smallcounter.com/count.php?count_value=&c_style=4&id=${counterId}`;
-const counterHref = `https://smallcounter.com/cc_stats/${counterId}/`;
+interface Props {
+  scope?: 'site' | 'page';
+}
+
+const { scope = 'page' } = Astro.props;
+const isSiteCounter = scope === 'site';
+const containerId = isSiteCounter ? 'busuanzi_container_site_pv' : 'busuanzi_container_page_pv';
+const valueId = isSiteCounter ? 'busuanzi_value_site_pv' : 'busuanzi_value_page_pv';
+const label = isSiteCounter ? '全站点击' : '本文点击';
+const note = isSiteCounter ? '累计访问次数' : '当前页面访问次数';
 ---
 
 <section class="visitor-counter" aria-label="点击量统计">
-  <span class="visitor-counter-label">点击量</span>
-  <a class="visitor-counter-count" href={counterHref} target="_blank" rel="noreferrer" aria-label="查看点击量统计">
-    <img
-      src={counterSrc}
-      loading="lazy"
-      decoding="async"
-      referrerpolicy="no-referrer-when-downgrade"
-      alt="SmallCounter page view count"
-    />
-  </a>
-  <span>tracked by SmallCounter</span>
+  <span class="visitor-counter-label">{label}</span>
+  <strong class="visitor-counter-value" id={containerId}><span id={valueId}>--</span></strong>
+  <span class="visitor-counter-note">{note}</span>
 </section>
+
+<script is:inline async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
