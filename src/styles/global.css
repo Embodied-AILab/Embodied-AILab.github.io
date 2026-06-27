@@ -314,7 +314,7 @@ html[data-theme='dark'] .theme-knob { transform: translateX(30px); }
 .home-lab {
   display: grid;
   gap: clamp(18px, 2.2vw, 28px);
-  padding-block: clamp(10px, 2vh, 20px) clamp(60px, 8vh, 92px);
+  padding-block: clamp(10px, 2vh, 20px) clamp(18px, 3vh, 32px);
 }
 .home-hero {
   min-height: 350px;
@@ -1631,7 +1631,7 @@ html[data-theme='dark'] .article-like-button {
   .desktop-nav { display: none; }
   .mobile-menu { display: block; }
   .header-tools { margin-left: auto; }
-  .home-lab { gap: 24px; padding-block: 18px 58px; }
+  .home-lab { gap: 24px; padding-block: 18px 34px; }
   .home-hero { grid-template-columns: 1fr; min-height: 0; }
   .home-hero-side { min-height: 310px; }
   .home-insight-row { grid-template-columns: 1fr; }
@@ -1694,7 +1694,7 @@ html[data-theme='dark'] .article-like-button {
   .theme-track { width: 58px; height: 34px; }
   .theme-knob { width: 24px; height: 24px; }
   html[data-theme='dark'] .theme-knob { transform: translateX(24px); }
-  .home-lab { gap: 18px; padding-block: 14px 42px; }
+  .home-lab { gap: 18px; padding-block: 14px 28px; }
   .home-hero { padding: 10px 0 22px; border-radius: 0; }
   .home-hero-copy { padding: 6px 0; }
   .home-eyebrow,
